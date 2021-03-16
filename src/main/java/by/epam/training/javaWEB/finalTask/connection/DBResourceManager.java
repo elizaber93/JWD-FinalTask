@@ -1,17 +1,24 @@
 package by.epam.training.javaWEB.finalTask.connection;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class DBResourceManager {
     private final static DBResourceManager instance = new DBResourceManager();
 
-    private ResourceBundle bundle = ResourceBundle.getBundle("_java._se._07._connectionpool.db");
-
     public static DBResourceManager getInstance() {
         return instance;
     }
 
-    public String getValue(String key) {
-        return bundle.getString(key);
+    public String getValue(String key) throws IOException {
+
+        Properties property = new Properties();
+        property.load(new FileInputStream("src/main/resources/db.properties"));
+        return property.getProperty(key);
+
+
     }
 }

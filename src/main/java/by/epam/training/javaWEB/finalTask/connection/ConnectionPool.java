@@ -1,6 +1,6 @@
 package by.epam.training.javaWEB.finalTask.connection;
 
-import javax.sql.PooledConnection;
+import java.io.IOException;
 import java.sql.*;
 import java.util.Locale;
 import java.util.Map;
@@ -8,10 +8,19 @@ import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
-import by.epam.training.javaWEB.finalTask.connection.ConnectionPoolException;
 
 
 public class ConnectionPool {
+    private static ConnectionPool instance;
+    static {
+        try {
+            instance = new ConnectionPool();
+            instance.initPoolData();
+        } catch (ConnectionPoolException | IOException e) {
+            //logger
+        }
+    }
+
     private BlockingQueue<Connection> connectionQueue;
     private BlockingQueue<Connection> givenAwayConQueue;
 
@@ -21,7 +30,8 @@ public class ConnectionPool {
     private String password;
     private int poolSize;
 
-    private ConnectionPool() {
+
+    private ConnectionPool() throws IOException {
         DBResourceManager dbResourceManager = DBResourceManager.getInstance();
         this.driverName = dbResourceManager.getValue(DBParameter.DB_DRIVER);
         this.url = dbResourceManager.getValue(DBParameter.DB_URL);
@@ -34,6 +44,9 @@ public class ConnectionPool {
         }
     }
 
+    public static ConnectionPool getInstance() {
+        return instance;
+    }
 
     public void initPoolData() throws ConnectionPoolException {
         Locale.setDefault(Locale.ENGLISH);
@@ -43,6 +56,9 @@ public class ConnectionPool {
             givenAwayConQueue = new ArrayBlockingQueue<Connection>(poolSize);
             connectionQueue = new ArrayBlockingQueue<Connection>(poolSize);
             for (int i = 0; i < poolSize; i++) {
+                System.out.println(url);
+                System.out.println(user);
+                System.out.println(password);
                 Connection connection = DriverManager.getConnection(url, user, password);
                 PooledConnection pooledConnection = new PooledConnection(connection);
                 connectionQueue.add(pooledConnection);
@@ -74,7 +90,7 @@ public class ConnectionPool {
             connection = connectionQueue.take();
             givenAwayConQueue.add(connection);
         } catch (InterruptedException e) {
-            throw new ConnectionPoolException("Error connectin to the data source", e);
+            throw new ConnectionPoolException("Error connection to the data source", e);
         }
         return connection;
     }
@@ -300,7 +316,7 @@ public class ConnectionPool {
 
         @Override
         public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-            return connection.prepareCall(sql, resultSetType, resultSetConcurrency); ;
+            return connection.prepareCall(sql, resultSetType, resultSetConcurrency);
         }
 
         @Override

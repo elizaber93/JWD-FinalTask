@@ -37,6 +37,9 @@ public class LogIn implements Command {
 
             HttpSession session = request.getSession(true);
             session.setAttribute("auth", true);
+
+
+
             response.sendRedirect("Controller?command=gotomainpage");
 
         } catch (ServiceException e) {
