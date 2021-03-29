@@ -2,6 +2,7 @@ package by.epam.training.javaWEB.finalTask.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Product implements Serializable {
@@ -14,7 +15,7 @@ public class Product implements Serializable {
     private int totalQuantity;
     private double totalRating;
 
-    private ArrayList<ProductDetail> details = new ArrayList<>();
+    private List<ProductDetail> details = new ArrayList<>();
 
     public Product() {
     }
@@ -94,11 +95,11 @@ public class Product implements Serializable {
         this.totalRating = totalRating;
     }
 
-    public ArrayList<ProductDetail> getDetails() {
+    public List<ProductDetail> getDetails() {
         return details;
     }
 
-    public void setDetails(ArrayList<ProductDetail> details) {
+    public void setDetails(List<ProductDetail> details) {
         this.details = details;
     }
 

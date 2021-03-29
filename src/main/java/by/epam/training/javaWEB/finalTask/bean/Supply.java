@@ -6,6 +6,7 @@ import java.util.Objects;
 
 public class Supply implements Serializable {
     private int idSupply;
+    private int supplierId;
     private int idProduct;
     private String document;
     private Timestamp date;
@@ -80,6 +81,14 @@ public class Supply implements Serializable {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public int getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(int supplierId) {
+        this.supplierId = supplierId;
     }
 
     @Override

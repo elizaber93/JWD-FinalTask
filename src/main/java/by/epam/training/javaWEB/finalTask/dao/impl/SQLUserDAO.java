@@ -1,123 +1,153 @@
 package by.epam.training.javaWEB.finalTask.dao.impl;
 
 import by.epam.training.javaWEB.finalTask.bean.RegistrationInfo;
+import by.epam.training.javaWEB.finalTask.bean.Role;
 import by.epam.training.javaWEB.finalTask.bean.User;
-import by.epam.training.javaWEB.finalTask.connection.ConnectionPool;
-import by.epam.training.javaWEB.finalTask.connection.ConnectionPoolException;
 import by.epam.training.javaWEB.finalTask.dao.DAOException;
-import by.epam.training.javaWEB.finalTask.dao.UserDAO;
-import by.epam.training.javaWEB.finalTask.service.ServiceException;
-import by.epam.training.javaWEB.finalTask.service.ServiceProvider;
-import by.epam.training.javaWEB.finalTask.service.impl.UserServiceImpl;
+import by.epam.training.javaWEB.finalTask.service.exception.InvalidLoginException;
+import by.epam.training.javaWEB.finalTask.service.exception.InvalidPasswordException;
+import by.epam.training.javaWEB.finalTask.dao.daoInterface.UserDAO;
+import by.epam.training.javaWEB.finalTask.dao.executor.QueryExecutor;
+import org.apache.log4j.Logger;
 
-import javax.sql.rowset.serial.SerialException;
-import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class SQLUserDAO implements UserDAO {
-    private static ConnectionPool connectionPool;
-    static {
-        connectionPool = ConnectionPool.getInstance();
-    }
+
+    private final String FIND_USER_BY_LOGIN_N_PASSWORD = "select * from users where login = ? and password = ?;";
+    private final String INSERT_USER = "insert into users (login,password,idrole) values (?,?,?);";
+    private final String COUNT_LOGIN = "select count(*) from users where login = ?;";
+    private final String COUNT_LOGIN_N_PASSWORD = "select count(*) from users where login = ? and password = ?;";
+    private final String SELECT_USER_ID = "select (iduser) from users where login = ?;";
 
     @Override
     public User authorization(String login, String password) throws DAOException {
-
-
-        Connection connection = null;
-        try {
-            connection = connectionPool.takeConnection();
-        } catch (ConnectionPoolException e) {
-            //logger
+        if (!isFoundByLogin(login)) {
+            throw new InvalidLoginException("Login not found");
         }
-
-        Statement statement = null;
-        try {
-            assert connection != null;
-            statement = connection.createStatement();
-        } catch (SQLException e) {
-            //logger
+        if (!findByLoginAndPassword(login, password)) {
+            throw new InvalidPasswordException("Illegal password");
         }
-
-        String userQuery = "select * from users";
-        ResultSet resultSet = null;
-        try {
-            assert statement != null;
-            resultSet = statement.executeQuery(userQuery);
-        } catch (SQLException e) {
-            throw new DAOException("невозможно выполнить sql-запрос", e);
-            //logger
-        }
-        try{
-            while (resultSet.next()) {
-                if (resultSet.getString("login").equals(login) &&
-                        resultSet.getString("password").equals(password)) {
-                    return new User(login, password, resultSet.getInt("idrole"));
-                }
-                if (resultSet.getString("login").equals(login) &&
-                        !resultSet.getString("password").equals(password)) {
-                    throw new DAOException("неверный пароль");
-                }
-                if (!resultSet.getString("login").equals(login) ||
-                        !resultSet.getString("password").equals(password)) {
-                    throw new DAOException("неверный логин или пароль");
-                }
-            }
-        } catch (SQLException e) {
-            //logger
-        }
-        throw new DAOException("User not found");
+        return selectUserByLoginAndPassword(login, password);
     }
 
     @Override
     public boolean registration(RegistrationInfo regInfo) throws DAOException {
-        if (findUser(regInfo.getLogin())) {
-            throw new DAOException("Пользователь с таким логином уже существует");
+        if (isFoundByLogin(regInfo.getLogin())) {
+            throw new InvalidLoginException("Login is already taken");
         }
-        try {
-            ServiceProvider.getInstance().getValidationService().isValid(regInfo);
-        } catch (ServiceException e) {
-            throw new DAOException("неверная регистрационная информация");
-        }
-        String insertUserQuery = "insert into users(login, password) values (\"" + regInfo.getLogin() + "\",\"" +regInfo.getPassword() + "\");";
+        return insertUser(regInfo.getLogin(), regInfo.getPassword(), Role.CLIENT.getIdRole());
 
-        String getUserIdQuery = "select iduser from users where login = \"" + regInfo.getLogin() + "\";";
-
-        Connection connection = null;
-        try {
-            connection = connectionPool.takeConnection();
-        } catch (ConnectionPoolException e) {
-            //logger
-        }
-
-        Statement statement = null;
-        try {
-            assert connection != null;
-            statement = connection.createStatement();
-        } catch (SQLException e) {
-            //logger
-        }
-
-
-
-        int updateResult;
-        try {
-            assert statement != null;
-            updateResult = statement.executeUpdate(insertUserQuery);
-        } catch (SQLException e) {
-            throw new DAOException("невозможно выполнить sql-запрос", e);
-            //logger
-        }
-        if (updateResult != 1) {
-            System.out.println("Данные не добавлены");
-            return false;
-        }
-        return true;
     }
 
-    public boolean findUser(String login) {
-        return false;
+    public boolean isFoundByLogin(String login) throws DAOException {
+
+        QueryExecutor executor = QueryExecutor.getInstance();
+        PreparedStatement statement = executor.getPreparedStatement(COUNT_LOGIN);
+
+        ResultSet foundUserCount = null;
+        int result;
+        try {
+            statement.setString(1, login);
+            foundUserCount = statement.executeQuery();
+            foundUserCount.next();
+            result = foundUserCount.getInt(1);
+        } catch (SQLException e) {
+            Logger.getLogger(SQLUserDAO.class).info(e.getMessage());
+            throw new DAOException("Failed execution statement", e);
+        } finally {
+            executor.close();
+        }
+        return result >= 1;
+    }
+
+    public boolean findByLoginAndPassword(String login, String password) throws DAOException {
+        QueryExecutor executor = QueryExecutor.getInstance();
+        PreparedStatement statement = executor.getPreparedStatement(COUNT_LOGIN_N_PASSWORD);
+
+        ResultSet resultSet = null;
+        int result;
+        try {
+            statement.setString(1, login);
+            statement.setString(1, password);
+            resultSet = statement.executeQuery();
+            resultSet.next();
+            result = resultSet.getInt(1);
+        } catch (SQLException e) {
+            Logger.getLogger(SQLUserDAO.class).info(e.getMessage());
+            throw new DAOException("Failed execution statement", e);
+        } finally {
+            executor.close();
+        }
+        return result >= 1;
+    }
+
+    public User selectUserByLoginAndPassword(String login, String password) throws DAOException {
+        User user = new User();
+        QueryExecutor executor = QueryExecutor.getInstance();
+
+        PreparedStatement statement = executor.getPreparedStatement(FIND_USER_BY_LOGIN_N_PASSWORD);
+
+        ResultSet foundUser = null;
+        try {
+            statement.setString(1, login);
+            statement.setString(2, password);
+            foundUser = statement.executeQuery();
+        } catch (SQLException e) {
+            Logger.getLogger(SQLUserDAO.class).info(e.getMessage());
+            throw new DAOException("Failed execution statement", e);
+        } finally {
+            executor.close();
+        }
+        try {
+            if (foundUser.next()) {
+                user.setId(foundUser.getLong(1));
+                user.setRole(foundUser.getInt(4));
+                user.setLogin(login);
+                user.setPassword(password);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(SQLUserDAO.class).info(e.getMessage());
+            throw new DAOException("User not found", e);
+        }
+        return user;
+    }
+
+    public boolean insertUser(String login, String password, int idrole) throws DAOException {
+
+        QueryExecutor executor = QueryExecutor.getInstance();
+        PreparedStatement statement = executor.getPreparedStatement(INSERT_USER);
+        int result;
+        try {
+            statement.setString(1,login);
+            statement.setString(2, password);
+            statement.setInt(3,2);
+            result = statement.executeUpdate();
+        } catch (SQLException e) {
+            Logger.getLogger(SQLUserDAO.class).info(e.getMessage());
+            throw new DAOException("Failed to add user",e);
+        }
+        return result >= 1;
+    }
+
+    public long getUserId(String login) throws DAOException {
+        QueryExecutor executor = QueryExecutor.getInstance();
+        PreparedStatement statement = executor.getPreparedStatement(SELECT_USER_ID);
+        ResultSet foundUser = null;
+        int userId;
+        try {
+            statement.setString(1, login);
+            foundUser = statement.executeQuery();
+            foundUser.next();
+            userId = foundUser.getInt(1);
+        } catch (SQLException e) {
+            Logger.getLogger(SQLUserDAO.class).info(e.getMessage());
+            throw new DAOException("Failed execution statement", e);
+        } finally {
+            executor.close();
+        }
+        return userId;
     }
 }

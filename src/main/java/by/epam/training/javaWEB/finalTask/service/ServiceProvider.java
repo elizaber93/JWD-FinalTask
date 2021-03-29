@@ -2,6 +2,8 @@ package by.epam.training.javaWEB.finalTask.service;
 
 import by.epam.training.javaWEB.finalTask.service.impl.UserServiceImpl;
 import by.epam.training.javaWEB.finalTask.service.impl.ValidationServiceImpl;
+import by.epam.training.javaWEB.finalTask.service.serviceInterface.UserService;
+import by.epam.training.javaWEB.finalTask.service.serviceInterface.ValidationService;
 
 public final class ServiceProvider {
     private static final ServiceProvider instance = new ServiceProvider();

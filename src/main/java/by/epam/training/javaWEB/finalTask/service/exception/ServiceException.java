@@ -1,4 +1,4 @@
-package by.epam.training.javaWEB.finalTask.service;
+package by.epam.training.javaWEB.finalTask.service.exception;
 
 public class ServiceException extends Exception{
     private static final long serialVersionUID = -2795804103099775537L;

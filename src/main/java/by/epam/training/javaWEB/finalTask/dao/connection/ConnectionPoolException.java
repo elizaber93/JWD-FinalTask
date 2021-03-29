@@ -1,4 +1,4 @@
-package by.epam.training.javaWEB.finalTask.connection;
+package by.epam.training.javaWEB.finalTask.dao.connection;
 
 public class ConnectionPoolException extends Exception {
     private static final long serialVersionUID = 1L;

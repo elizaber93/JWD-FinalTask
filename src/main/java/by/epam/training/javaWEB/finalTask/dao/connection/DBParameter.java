@@ -1,4 +1,4 @@
-package by.epam.training.javaWEB.finalTask.connection;
+package by.epam.training.javaWEB.finalTask.dao.connection;
 
 public class DBParameter {
     public static String DB_DRIVER = "db.driver";

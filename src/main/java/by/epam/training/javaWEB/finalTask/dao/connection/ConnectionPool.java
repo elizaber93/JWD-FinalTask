@@ -1,4 +1,6 @@
-package by.epam.training.javaWEB.finalTask.connection;
+package by.epam.training.javaWEB.finalTask.dao.connection;
+
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.*;
@@ -15,9 +17,10 @@ public class ConnectionPool {
     static {
         try {
             instance = new ConnectionPool();
+            //?
             instance.initPoolData();
         } catch (ConnectionPoolException | IOException e) {
-            //logger
+            Logger.getLogger(ConnectionPool.class).info(e.getMessage());
         }
     }
 
@@ -64,23 +67,26 @@ public class ConnectionPool {
                 connectionQueue.add(pooledConnection);
             }
         } catch (SQLException e) {
-                throw new ConnectionPoolException("SQLException in ConnectionPool", e);
-            }
+            Logger.getLogger(ConnectionPool.class).info(e.getMessage());
+            throw new ConnectionPoolException("SQLException in ConnectionPool", e);
+        }
         catch (ClassNotFoundException e) {
+            Logger.getLogger(ConnectionPool.class).info(e.getMessage());
             throw new ConnectionPoolException("Can't find database driver class", e);
         }
 
     }
-    public void dispose() {
+    public void dispose() throws ConnectionPoolException {
         clearConnectionQueue();
     }
 
-    private void clearConnectionQueue() {
+    private void clearConnectionQueue() throws ConnectionPoolException {
         try {
             closeConnectionQueue(givenAwayConQueue);
             closeConnectionQueue(connectionQueue);
         } catch (SQLException e) {
-            //logger
+            Logger.getLogger(ConnectionPool.class).info(e.getMessage());
+            throw new ConnectionPoolException("Failed to clear connection queue");
         }
     }
 
@@ -90,6 +96,7 @@ public class ConnectionPool {
             connection = connectionQueue.take();
             givenAwayConQueue.add(connection);
         } catch (InterruptedException e) {
+            Logger.getLogger(ConnectionPool.class).info(e.getMessage());
             throw new ConnectionPoolException("Error connection to the data source", e);
         }
         return connection;
@@ -99,30 +106,31 @@ public class ConnectionPool {
         try {
             connection.close();
         } catch (SQLException e) {
-            //Logger
+            Logger.getLogger(ConnectionPool.class).info(e.getMessage());
         }
         try {
             resultSet.close();
         } catch (SQLException e) {
-            //Logger
+            Logger.getLogger(ConnectionPool.class).info(e.getMessage());
         }
         try {
             statement.close();
         } catch (SQLException e) {
-            //Logger
+            Logger.getLogger(ConnectionPool.class).info(e.getMessage());
         }
     }
 
     public void closeConnection(Connection connection, Statement statement) {
         try {
+            if (connection != null)
             connection.close();
         } catch (SQLException e) {
-            //Logger
+            Logger.getLogger(ConnectionPool.class).info(e.getMessage());
         }
         try {
             statement.close();
         } catch (SQLException e) {
-            //Logger
+            Logger.getLogger(ConnectionPool.class).info(e.getMessage());
         }
     }
 

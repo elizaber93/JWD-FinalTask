@@ -1,10 +1,8 @@
-package by.epam.training.javaWEB.finalTask.connection;
+package by.epam.training.javaWEB.finalTask.dao.connection;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.ResourceBundle;
 
 public class DBResourceManager {
     private final static DBResourceManager instance = new DBResourceManager();

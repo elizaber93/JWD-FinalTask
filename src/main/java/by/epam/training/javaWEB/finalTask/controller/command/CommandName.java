@@ -6,6 +6,8 @@ public enum CommandName {
     REGISTRATION,
     SAVE_NEW_USER,
     GOTO_INDEXPAGE,
-    GOTO_MAINPAGE
+    GOTO_MAINPAGE,
+    ADD_SUPPLIER,
+    ADD_SUPPlY
 
 }

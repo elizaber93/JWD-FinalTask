@@ -7,9 +7,15 @@ public class ProductDetail implements Serializable {
     private int idProductDetail;
     private int idProduct;
     private int idProperty;
+    private String propertyName;
     private String value;
 
     public ProductDetail() {
+    }
+
+    public ProductDetail(String propertyName, String value) {
+        this.propertyName = propertyName;
+        this.value = value;
     }
 
     public ProductDetail(int idProductDetail, int idProduct, int idProperty, String value) {
