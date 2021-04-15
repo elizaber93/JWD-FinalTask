@@ -5,12 +5,29 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 public class Article implements Serializable {
+    private int id;
     private int idUser;
     private String title;
     private Timestamp date;
     private String link;
 
     public Article() {
+    }
+
+    public Article(int id, int idUser, String title, Timestamp date, String link) {
+        this.id = id;
+        this.idUser = idUser;
+        this.title = title;
+        this.date = date;
+        this.link = link;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Article(int idUser, String title, Timestamp date, String link) {

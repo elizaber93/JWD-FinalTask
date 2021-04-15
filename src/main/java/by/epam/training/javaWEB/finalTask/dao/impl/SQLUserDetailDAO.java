@@ -1,5 +1,7 @@
 package by.epam.training.javaWEB.finalTask.dao.impl;
 
+import by.epam.training.javaWEB.finalTask.bean.Article;
+import by.epam.training.javaWEB.finalTask.bean.User;
 import by.epam.training.javaWEB.finalTask.bean.UserDetail;
 import by.epam.training.javaWEB.finalTask.dao.DAOException;
 import by.epam.training.javaWEB.finalTask.dao.daoInterface.UserDetailDAO;
@@ -9,98 +11,119 @@ import org.apache.log4j.Logger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLUserDetailDAO implements UserDetailDAO {
 
-    private final String INSERT_USER_ID = "insert into user_details (iduser) values (?);";
-    private final String ADD_FIRST_NAME = "update user_details set first_name = ? where iduser = ?;";
-    private final String ADD_LAST_NAME = "update user_details set last_name = ? where iduser = ?;";
-    private final String ADD_PHONE = "update user_details set phone = ? where iduser = ?;";
-    private final String ADD_ADDRESS = "update user_details set address = ? where iduser = ?;";
-    private final String ADD_EMAIL = "update user_details set first_name = ? where iduser = ?;";
-    private final String ADD_IMAGE_LINK = "update user_details set image = ? where iduser = ?;";
+    private final String INSERT_USER = "insert into user_details (iduser) values (?);";
+    private final String UPDATE_FIRST_NAME = "update user_details set first_name = ? where iduser = ?;";
+    private final String UPDATE_LAST_NAME = "update user_details set last_name = ? where iduser = ?;";
+    private final String UPDATE_PHONE = "update user_details set phone = ? where iduser = ?;";
+    private final String UPDATE_ADDRESS = "update user_details set address = ? where iduser = ?;";
+    private final String UPDATE_EMAIL = "update user_details set email = ? where iduser = ?;";
+    private final String UPDATE_IMAGE_LINK = "update user_details set image = ? where iduser = ?;";
     private final String COUNT_EMAIL = "select count(*) from user_details where email = ?;";
-
+    private final String DELETE_ENTRY = "delete from user_details where iduser = ?;";
+    private final String SELECT_DETAIL = "select * from user_details where iduser = ?;";
 
     @Override
-    public void addUserDetail(UserDetail userDetail) throws DAOException {
-        long userId = userDetail.getUserId();
-        if (insertUser((int)userId)) {
-            updateUserDetail(userDetail);
-        }
+    public boolean addUserDetail(int userId) throws DAOException {
+        QueryExecutor executor = QueryExecutor.getInstance();
+        int insertResult = executor.update(INSERT_USER, userId);
+        executor.close();
+        return insertResult == 1;
     }
 
-    @Override
-    public void updateUserDetail(UserDetail userDetail) throws DAOException {
+    public boolean updateAll(UserDetail userDetail) throws DAOException {
+        boolean result = true;
         if (userDetail.getFirstName() != null) {
-            addDetail(ADD_FIRST_NAME, userDetail.getFirstName(), (int)userDetail.getUserId());
+            result = updateParameter(Parameter.FIRST_NAME, userDetail.getUserId(),userDetail.getFirstName());
         }
         if (userDetail.getLastName() != null) {
-            addDetail(ADD_LAST_NAME, userDetail.getLastName(), (int)userDetail.getUserId());
-        }
-        if (userDetail.getAddress() != null) {
-            addDetail(ADD_ADDRESS, userDetail.getAddress(),(int)userDetail.getUserId());
+            result = result && updateParameter(Parameter.LAST_NAME, userDetail.getUserId(),userDetail.getLastName());
         }
         if (userDetail.getPhone() != null) {
-            addDetail(ADD_PHONE, userDetail.getPhone(), (int) userDetail.getUserId());
+            result = result && updateParameter(Parameter.PHONE, userDetail.getUserId(),userDetail.getPhone());
         }
         if (userDetail.getEmail() != null) {
-            addDetail(ADD_EMAIL, userDetail.getEmail(),(int) userDetail.getUserId());
+            result = result && updateParameter(Parameter.EMAIL, userDetail.getUserId(),userDetail.getEmail());
+        }
+        if (userDetail.getAddress() != null) {
+            result = result && updateParameter(Parameter.ADDRESS, userDetail.getUserId(),userDetail.getAddress());
         }
         if (userDetail.getImageLink() != null) {
-            addDetail(ADD_IMAGE_LINK, userDetail.getImageLink(), (int) userDetail.getUserId());
+            result = result && updateParameter(Parameter.IMAGE, userDetail.getUserId(),userDetail.getImageLink());
         }
+        return result;
     }
 
-    public void addDetail(String query, String value, int id) throws DAOException {
+    public boolean updateParameter(Parameter parameter, int userId, Object value) throws DAOException {
         QueryExecutor executor = QueryExecutor.getInstance();
-        PreparedStatement statement = executor.getPreparedStatement(query);
-        try {
-            statement.setString(1,value);
-            statement.setInt(2, id);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            Logger.getLogger(SQLUserDetailDAO.class).info(e.getMessage());
-            throw new DAOException("Failed execution statement", e);
-        } finally {
-            executor.close();
-        }
-    }
-
-    public boolean insertUser(int userId) throws DAOException {
-        QueryExecutor executor = QueryExecutor.getInstance();
-        PreparedStatement statement = executor.getPreparedStatement(INSERT_USER_ID);
         int result;
-        try {
-            statement.setInt(1,userId);
-            result = statement.executeUpdate();
-        } catch (SQLException e) {
-            Logger.getLogger(SQLUserDetailDAO.class).info(e.getMessage());
-            throw new DAOException("Failed execution statement", e);
-        } finally {
-            executor.close();
+        if (!(value instanceof String)) {
+            throw new DAOException("Illegal type");
         }
-        return result >= 1;
+        switch (parameter) {
+            case FIRST_NAME:
+                result = executor.update(UPDATE_FIRST_NAME, value, userId);
+                break;
+            case LAST_NAME:
+                result = executor.update(UPDATE_LAST_NAME, value, userId);
+                break;
+            case PHONE:
+                result = executor.update(UPDATE_PHONE, value, userId);
+                break;
+            case ADDRESS:
+                result = executor.update(UPDATE_ADDRESS, value, userId);
+                break;
+            case EMAIL:
+                result = executor.update(UPDATE_EMAIL, value, userId);
+                break;
+            case IMAGE:
+                result = executor.update(UPDATE_IMAGE_LINK, value, userId);
+                break;
+            default: result = 0;
+        }
+        executor.close();
+        return result == 1;
     }
 
-    public boolean findEmail(String email) throws DAOException {
+    @Override
+    public boolean deleteUserDetail(int userId) throws DAOException {
         QueryExecutor executor = QueryExecutor.getInstance();
-        PreparedStatement statement = executor.getPreparedStatement(COUNT_EMAIL);
-            ResultSet foundEntry = null;
-            int result;
+        int insertResult = executor.update(DELETE_ENTRY, userId);
+        executor.close();
+        return insertResult == 1;
+    }
+
+    @Override
+    public UserDetail getUserDetail(int userId) throws DAOException {
+        UserDetail userDetail = new UserDetail();
+        QueryExecutor executor = QueryExecutor.getInstance();
+        ResultSet resultSet = executor.select(SELECT_DETAIL,userId);
+        userDetail = convertToList(resultSet).get(0);
+        executor.close();
+        return userDetail;
+    }
+
+    public List<UserDetail> convertToList(ResultSet resultSet) {
+        List<UserDetail> userDetails = new ArrayList<>();
+        if (resultSet != null) {
             try {
-                statement.setString(1, email);
-                foundEntry = statement.executeQuery();
-                foundEntry.next();
-                result = foundEntry.getInt(1);
+                while (resultSet.next()) {
+                    userDetails.add(new UserDetail(resultSet.getInt(2),
+                            resultSet.getString(3),
+                            resultSet.getString(4),
+                            resultSet.getString(5),
+                            resultSet.getString(6),
+                            resultSet.getString(7),
+                            resultSet.getString(8)));
+                }
             } catch (SQLException e) {
-                Logger.getLogger(SQLUserDetailDAO.class);
-                throw new DAOException("Failed execution statement", e);
-            } finally {
-                executor.close();
+                Logger.getLogger(SQLServiceDAO.class).info(e.getMessage());
             }
-            return result >= 1;
         }
-
-
+        return userDetails;
+    }
 }

@@ -8,4 +8,6 @@ import java.util.List;
 public interface SupplierService {
     boolean addSupplier(Supplier supplier);
     boolean isFound(Supplier supplier) throws ServiceException;
+    List<Supplier> getSupplierList() throws ServiceException;
+    boolean updateSupplier(Supplier supplier) throws ServiceException;
 }

@@ -4,15 +4,26 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class UserDetail implements Serializable {
-    private long userId;
+
     private String firstName;
     private String lastName;
     private String phone;
     private String email;
     private String address;
     private String imageLink;
+    private int userId;
 
     public UserDetail() {
+    }
+
+    public UserDetail(int userId, String firstName, String lastName, String phone, String email, String address, String imageLink) {
+        this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+        this.imageLink = imageLink;
     }
 
     public String getFirstName() {
@@ -63,11 +74,11 @@ public class UserDetail implements Serializable {
         this.imageLink = imageLink;
     }
 
-    public long getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
@@ -90,3 +101,4 @@ public class UserDetail implements Serializable {
         return Objects.hash(userId, firstName, lastName, phone, email, address, imageLink);
     }
 }
+

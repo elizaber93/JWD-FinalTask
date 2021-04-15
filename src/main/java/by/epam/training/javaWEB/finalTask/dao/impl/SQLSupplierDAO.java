@@ -47,7 +47,6 @@ public class SQLSupplierDAO implements SupplierDAO {
         switch (parameter) {
             case NAME:
                 resultSet = executor.select(SELECT_BY_NAME, value);
-                System.out.println("i'm in namecase");
                 break;
             case REQUISITES:
                 resultSet = executor.select(SELECT_BY_REQUISITES, value);
@@ -114,15 +113,15 @@ public class SQLSupplierDAO implements SupplierDAO {
         return supplierList;
     }
 
-    public boolean update(Parameter parameter, Supplier supplier, Object value) throws DAOException {
+    public boolean update(Parameter parameter, int id, Object value) throws DAOException {
         QueryExecutor executor = QueryExecutor.getInstance();
         int result;
         switch (parameter) {
             case NAME:
-                result = executor.update(UPDATE_NAME, value, supplier.getIdSupplier());
+                result = executor.update(UPDATE_NAME, value, id);
                 break;
             case REQUISITES:
-                result = executor.update(UPDATE_REQUISITES, value, supplier.getIdSupplier());
+                result = executor.update(UPDATE_REQUISITES, value, id);
                 break;
             default: result = 0;
         }

@@ -20,13 +20,6 @@ public class SQLProductDAO implements ProductDAO {
     private final String SELECT_BY_PRICE = "select * from products where current_price >= ? and current_price <= ?;";
     private final String SELECT_BY_RATING = "select * from products where rating >= ?;";
     private final String SELECT_BY_NAME = "select * from products where name = ?;";
-    private final String UPDATE_ALL = "update products set name = ?, " +
-                                        "current_price = ?, " +
-                                        "current_quantity = ?, " +
-                                        "description = ?, " +
-                                        "total_rating = ?, " +
-                                        "total_quantity = ?, " +
-                                        "image = ? where idproduct = ?;";
     private final String UPDATE_NAME = "update products set name = ? where idproduct = ?;";
     private final String UPDATE_PRICE = "update products set current_price = ? where idproduct = ?;";
     private final String UPDATE_QUANTITY = "update products set current_quantity = ? where idproduct = ?;";
@@ -34,35 +27,58 @@ public class SQLProductDAO implements ProductDAO {
     private final String UPDATE_RATING = "update products set total_rating = ? where idproduct = ?;";
     private final String UPDATE_TOTAL_QUANITY = "update products set total_quantity = ? where idproduct = ?;";
     private final String UPDATE_IMAGE = "update products set image = ? where idproduct = ?;";
-    private final String CHECK_NAME = "select count(*) from products where name = ?;";
+    private final String CHECK_BY_NAME = "select count(*) from products where name = ?;";
+    private final String CHECK_BY_ID = "select count(*) from products where idproduct = ?;";
     private final String SELECT_MAX_PRICE = "select max(price) from products;";
     private final String SELECT_MIN_PRICE = "select min(price) from products;";
+    private final String DELETE_PRODUCT = "delete from products where idproduct = ?;";
 
     @Override
     public boolean addProduct(Product product) throws DAOException {
         QueryExecutor executor = QueryExecutor.getInstance();
-        int result = executor.update(SELECT_BY_ID, product.getName(), product.getDescription(), product.getImageLink());
+        int result = executor.update(INSERT_PRODUCT, product.getName(), product.getDescription(), product.getImageLink());
         executor.close();
         return result == 1;
     }
 
     @Override
-    public Product getProduct(int id) throws DAOException {
+    public boolean deleteProduct(Product product) throws DAOException {
         QueryExecutor executor = QueryExecutor.getInstance();
-        ResultSet resultSet = executor.select(SELECT_BY_ID, id);
-        Product product = convertToList(resultSet).get(0);
+        int result = executor.update(DELETE_PRODUCT, product.getIdProduct());
         executor.close();
-        return product;
+        return result == 1;
     }
 
     @Override
-    public List<String> getProductNameList() throws DAOException {
-        List<String> productList = new ArrayList<>();
-        List<Product> products = getProductList();
-        for (Product product : products) {
-            productList.add(product.getName());
+    public boolean update(Parameter parameter, Product product, Object value) throws DAOException {
+        QueryExecutor executor = QueryExecutor.getInstance();
+        int result;
+        switch (parameter) {
+            case NAME:
+                result = executor.update(UPDATE_NAME, value, product.getIdProduct());
+                break;
+            case PRICE:
+                result = executor.update(UPDATE_PRICE, value, product.getIdProduct());
+                break;
+            case DESCRIPTION:
+                result = executor.update(UPDATE_DESCRIPTION, value, product.getIdProduct());
+                break;
+            case RATING:
+                result = executor.update(UPDATE_RATING, value, product.getIdProduct());
+                break;
+            case CURRENT_QUANTITY:
+                result = executor.update(UPDATE_QUANTITY, value, product.getIdProduct());
+                break;
+            case TOTAL_QUANTITY:
+                result = executor.update(UPDATE_TOTAL_QUANITY, value, product.getIdProduct());
+                break;
+            case IMAGE:
+                result = executor.update(UPDATE_IMAGE, value, product.getIdProduct());
+                break;
+            default: result = 0;
         }
-        return productList;
+        executor.close();
+        return result == 1;
     }
 
     @Override
@@ -72,6 +88,32 @@ public class SQLProductDAO implements ProductDAO {
         List<Product> productList = convertToList(resultSet);
         executor.close();
         return productList;
+    }
+
+    @Override
+    public boolean check(int id) throws DAOException {
+        QueryExecutor executor = QueryExecutor.getInstance();
+        ResultSet resultSet = executor.select(CHECK_BY_ID, id);
+        int result;
+        try {
+            result = resultSet.getInt(1);
+        } catch (SQLException e) {
+            throw new DAOException("failed in checking product by id", e);
+        }
+        return result >= 1;
+    }
+
+    @Override
+    public boolean check(String name) throws DAOException {
+        QueryExecutor executor = QueryExecutor.getInstance();
+        ResultSet resultSet = executor.select(CHECK_BY_NAME, name);
+        int result;
+        try {
+            result = resultSet.getInt(1);
+        } catch (SQLException e) {
+            throw new DAOException("failed in checking product by name", e);
+        }
+        return result >= 1;
     }
 
     public List<Product> convertToList(ResultSet resultSet) throws DAOException {
@@ -156,4 +198,6 @@ public class SQLProductDAO implements ProductDAO {
         }
         return result;
     }
+
+
 }

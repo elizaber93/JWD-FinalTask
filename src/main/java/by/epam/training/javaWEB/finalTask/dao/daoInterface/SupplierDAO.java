@@ -13,5 +13,5 @@ public interface SupplierDAO {
      boolean check(String name) throws DAOException;
      boolean check(int id) throws DAOException;
      List<Supplier> getSupplierList() throws DAOException;
-     boolean update(Parameter parameter, Supplier supplier, Object value) throws DAOException;
+     boolean update(Parameter parameter, int id, Object value) throws DAOException;
 }

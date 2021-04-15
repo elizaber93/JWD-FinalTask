@@ -27,6 +27,8 @@ public class SQLServiceDAO implements ServiceDAO {
     private final String DELETE_SERVICE = "delete from services where idservice = ?;";
     private final String SELECT_MAX_PRICE = "select max(price) from services;";
     private final String SELECT_MIN_PRICE = "select min(price) from services;";
+    private final String CHECK_ID = "select count(*) from services where idservice = ?;";
+    private final String CHECK_NAME = "select count(*) from services where name = ?;";
 
     @Override
     public boolean addService(Service service) throws DAOException {

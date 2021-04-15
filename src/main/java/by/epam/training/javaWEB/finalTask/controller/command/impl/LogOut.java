@@ -17,9 +17,11 @@ public class LogOut implements Command {
 
         if(session != null) {
             session.removeAttribute("auth");
+            session.removeAttribute("userID");
+            session.removeAttribute("role");
         }
 
-        response.sendRedirect("Controller?command=gotoindexpage&message=logout ok");
+        response.sendRedirect("Controller?command=goto&page=index&message=logout ok");
 
     }
 }

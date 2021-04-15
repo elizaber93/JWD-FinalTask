@@ -9,6 +9,24 @@ public enum Parameter {
     RATING,
     CURRENT_QUANTITY,
     TOTAL_QUANTITY,
-    REQUISITES
+    REQUISITES,
+    SUPPLIER_NAME,
+    SUPPLIER_ID,
+    PRODUCT_NAME,
+    PRODUCT_ID,
+    DOCUMENT,
+    DATE,
+    AUTHOR,
+    TITLE,
+    LINK,
+    FIRST_NAME,
+    LAST_NAME,
+    PHONE,
+    ADDRESS,
+    EMAIL,
+    PASSWORD,
+    STATUS,
+    ROLE,
+    LOGIN
 
 }

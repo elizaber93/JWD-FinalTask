@@ -2,6 +2,7 @@ package by.epam.training.javaWEB.finalTask.dao.connection;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class DBResourceManager {
@@ -13,9 +14,13 @@ public class DBResourceManager {
 
     public String getValue(String key) throws IOException {
 
-        Properties property = new Properties();
-        property.load(new FileInputStream("src/main/resources/db.properties"));
-        return property.getProperty(key);
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream input = classLoader.getResourceAsStream("db.properties");
+// ...
+        Properties properties = new Properties();
+        properties.load(input);
+
+        return properties.getProperty(key);
 
 
     }

@@ -6,81 +6,15 @@ import java.util.Objects;
 public class RegistrationInfo implements Serializable {
     private String login;
     private String password;
-    private String firstName;
-    private String middleName;
-    private String lastName;
-    private String phone;
-    private String email;
-    private String address;
-    private String imageLink;
+    private UserDetail userDetail = new UserDetail();
 
     public RegistrationInfo() {
     }
 
-    public RegistrationInfo(String firstName, String middleName, String lastName, String phone, String email, String address, String imageLink) {
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.email = email;
-        this.address = address;
-        this.imageLink = imageLink;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getImageLink() {
-        return imageLink;
-    }
-
-    public void setImageLink(String imageLink) {
-        this.imageLink = imageLink;
+    public RegistrationInfo(String login, String password, UserDetail userDetail) {
+        this.login = login;
+        this.password = password;
+        this.userDetail = userDetail;
     }
 
     public String getLogin() {
@@ -99,6 +33,14 @@ public class RegistrationInfo implements Serializable {
         this.password = password;
     }
 
+    public UserDetail getUserDetail() {
+        return userDetail;
+    }
+
+    public void setUserDetail(UserDetail userDetail) {
+        this.userDetail = userDetail;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -106,18 +48,12 @@ public class RegistrationInfo implements Serializable {
         RegistrationInfo that = (RegistrationInfo) o;
         return login.equals(that.login) &&
                 password.equals(that.password) &&
-                firstName.equals(that.firstName) &&
-                middleName.equals(that.middleName) &&
-                lastName.equals(that.lastName) &&
-                phone.equals(that.phone) &&
-                email.equals(that.email) &&
-                address.equals(that.address) &&
-                imageLink.equals(that.imageLink);
+                userDetail.equals(that.userDetail);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(login, password, firstName, middleName, lastName, phone, email, address, imageLink);
+        return Objects.hash(login, password, userDetail);
     }
 
     @Override
@@ -125,13 +61,7 @@ public class RegistrationInfo implements Serializable {
         return "RegistrationInfo{" +
                 "login='" + login + '\'' +
                 ", password='" + password + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", address='" + address + '\'' +
-                ", imageLink='" + imageLink + '\'' +
+                ", userDetail=" + userDetail +
                 '}';
     }
 }

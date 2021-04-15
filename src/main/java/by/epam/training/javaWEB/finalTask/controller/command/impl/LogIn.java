@@ -1,11 +1,13 @@
 package by.epam.training.javaWEB.finalTask.controller.command.impl;
 
 import by.epam.training.javaWEB.finalTask.bean.AuthorizationInfo;
+import by.epam.training.javaWEB.finalTask.bean.Role;
 import by.epam.training.javaWEB.finalTask.bean.User;
 import by.epam.training.javaWEB.finalTask.controller.command.Command;
 import by.epam.training.javaWEB.finalTask.service.exception.ServiceException;
 import by.epam.training.javaWEB.finalTask.service.ServiceProvider;
 import by.epam.training.javaWEB.finalTask.service.serviceInterface.UserService;
+import org.apache.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -19,8 +21,8 @@ public class LogIn implements Command {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         AuthorizationInfo info = new AuthorizationInfo();
 
-        info.setLogin(request.getParameter("login"));
-        info.setPassword(request.getParameter("password"));
+        info.setLogin(request.getParameter("login_log"));
+        info.setPassword(request.getParameter("password_log"));
 
         ServiceProvider provider = ServiceProvider.getInstance();
         UserService userService = provider.getUserService();
@@ -31,19 +33,35 @@ public class LogIn implements Command {
             user = userService.authorization(info);
 
             if (user == null) {
-                response.sendRedirect("Controller?command=gotoindexpage&message=wrong2");
+                response.sendRedirect("Controller?command=goto&page=index&message=wrong2");
                 return;
             }
 
             HttpSession session = request.getSession(true);
             session.setAttribute("auth", true);
+            session.setAttribute("userId",user.getId());
+            switch (user.getRole()) {
+                case 1:
+                    session.setAttribute("role", Role.ADMIN);
+                    break;
+                case 2:
+                    session.setAttribute("role", Role.CLIENT);
+                    break;
+                case 3:
+                    session.setAttribute("role",Role.COURIER);
+                    break;
+                case 4:
+                    session.setAttribute("role", Role.SERVICE_STAFF);
+                    break;
+            }
 
 
 
-            response.sendRedirect("Controller?command=gotomainpage");
+            response.sendRedirect("Controller?command=goto&page=index");
 
         } catch (ServiceException e) {
-            response.sendRedirect("Controller?command=gotoindexpage&message=wrong in catch");
+            Logger.getLogger(LogIn.class).info(e);
+            response.sendRedirect("Controller?command=goto&page=index&message=wrong in catch");
         }
     }
 }

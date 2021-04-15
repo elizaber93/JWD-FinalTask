@@ -1,8 +1,6 @@
 package by.epam.training.javaWEB.finalTask.service.exception;
 
-import by.epam.training.javaWEB.finalTask.dao.DAOException;
-
-public class InvalidLoginException extends DAOException {
+public class InvalidLoginException extends ServiceException {
     private static final long serialVersionUID = 5579627996438039830L;
 
     public InvalidLoginException() {

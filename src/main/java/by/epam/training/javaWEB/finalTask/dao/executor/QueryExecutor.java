@@ -4,13 +4,9 @@ import by.epam.training.javaWEB.finalTask.dao.DAOException;
 import by.epam.training.javaWEB.finalTask.dao.connection.ConnectionPool;
 import by.epam.training.javaWEB.finalTask.dao.connection.ConnectionPoolException;
 import by.epam.training.javaWEB.finalTask.dao.impl.SQLProductDAO;
-import by.epam.training.javaWEB.finalTask.dao.impl.SQLUserDetailDAO;
 import org.apache.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class QueryExecutor {
     private static QueryExecutor instance = new QueryExecutor();
@@ -69,7 +65,7 @@ public class QueryExecutor {
             resultSet = statement.executeQuery();
             return resultSet;
         } catch (SQLException e) {
-            Logger.getLogger(SQLProductDAO.class).info(e.getMessage());
+            Logger.getLogger(QueryExecutor.class).info(e.getMessage());
             throw new DAOException("Failed statement execution in SQLDAO", e);
         }
     }
@@ -86,13 +82,15 @@ public class QueryExecutor {
                         statement.setString(i + 1, (String) value[i]);
                     } else if (value[i] instanceof Double) {
                         statement.setDouble(i + 1, (double) value[i]);
+                    } else if (value[i] instanceof Timestamp) {
+                        statement.setTimestamp(i + 1, (Timestamp)value[i]);
                     }
                 }
 
             }
             result = statement.executeUpdate();
         } catch (SQLException e) {
-            Logger.getLogger(SQLProductDAO.class).info(e.getMessage());
+            Logger.getLogger(QueryExecutor.class).info(e.getMessage());
             throw new DAOException("Failed statement execution", e);
         }
         return result;

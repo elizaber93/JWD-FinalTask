@@ -1,153 +1,183 @@
 package by.epam.training.javaWEB.finalTask.dao.impl;
 
-import by.epam.training.javaWEB.finalTask.bean.RegistrationInfo;
-import by.epam.training.javaWEB.finalTask.bean.Role;
-import by.epam.training.javaWEB.finalTask.bean.User;
+import by.epam.training.javaWEB.finalTask.bean.*;
 import by.epam.training.javaWEB.finalTask.dao.DAOException;
-import by.epam.training.javaWEB.finalTask.service.exception.InvalidLoginException;
-import by.epam.training.javaWEB.finalTask.service.exception.InvalidPasswordException;
 import by.epam.training.javaWEB.finalTask.dao.daoInterface.UserDAO;
+import by.epam.training.javaWEB.finalTask.dao.daoInterface.UserDetailDAO;
 import by.epam.training.javaWEB.finalTask.dao.executor.QueryExecutor;
 import org.apache.log4j.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLUserDAO implements UserDAO {
 
-    private final String FIND_USER_BY_LOGIN_N_PASSWORD = "select * from users where login = ? and password = ?;";
-    private final String INSERT_USER = "insert into users (login,password,idrole) values (?,?,?);";
-    private final String COUNT_LOGIN = "select count(*) from users where login = ?;";
-    private final String COUNT_LOGIN_N_PASSWORD = "select count(*) from users where login = ? and password = ?;";
-    private final String SELECT_USER_ID = "select (iduser) from users where login = ?;";
+    private final String SELECT_BY_LOGIN_N_PASSWORD = "select * from users where login = ? and password = ?;";
+    private final String INSERT_USER = "insert into users (login,password,idrole,idstatus) values (?,?,?,?);";
+    private final String CHECK_BY_LOGIN = "select count(*) from users where login = ?;";
+    private final String CHECK_BY_LOGIN_N_PASSWORD = "select count(*) from users where login = ? and password = ?;";
+    private final String SELECT_ID_BY_LOGIN = "select (iduser) from users where login = ?;";
+    private final String UPDATE_STATUS = "update users set idstatus = ?;";
+    private final String UPDATE_ROLE = "update users set idrole = ?;";
+    private final String UPDATE_PASSWORD = "update users set password = ?;";
+    private final String DELETE_LOGIN = "update users set login = NULL where iduser = ?;";
+    private final String DELETE_PASSWORD = "update users set password = NULL where iduser = ?;";
+    private final String SELECT_BY_LOGIN = "select * from users where login = ?;";
+    private final String SELECT_ALL = "select * from users;";
+    private final String SELECT_BY_ROLE = "select * from users where idrole = ?;";
+    private final String SELECT_BY_STATUS = "select * from users where idstatus = ?;";
+    private final String SELECT_BY_ID = "select * from users where iduser = ?;";
 
     @Override
     public User authorization(String login, String password) throws DAOException {
-        if (!isFoundByLogin(login)) {
-            throw new InvalidLoginException("Login not found");
-        }
-        if (!findByLoginAndPassword(login, password)) {
-            throw new InvalidPasswordException("Illegal password");
-        }
-        return selectUserByLoginAndPassword(login, password);
-    }
-
-    @Override
-    public boolean registration(RegistrationInfo regInfo) throws DAOException {
-        if (isFoundByLogin(regInfo.getLogin())) {
-            throw new InvalidLoginException("Login is already taken");
-        }
-        return insertUser(regInfo.getLogin(), regInfo.getPassword(), Role.CLIENT.getIdRole());
-
-    }
-
-    public boolean isFoundByLogin(String login) throws DAOException {
-
         QueryExecutor executor = QueryExecutor.getInstance();
-        PreparedStatement statement = executor.getPreparedStatement(COUNT_LOGIN);
-
-        ResultSet foundUserCount = null;
-        int result;
-        try {
-            statement.setString(1, login);
-            foundUserCount = statement.executeQuery();
-            foundUserCount.next();
-            result = foundUserCount.getInt(1);
-        } catch (SQLException e) {
-            Logger.getLogger(SQLUserDAO.class).info(e.getMessage());
-            throw new DAOException("Failed execution statement", e);
-        } finally {
-            executor.close();
-        }
-        return result >= 1;
-    }
-
-    public boolean findByLoginAndPassword(String login, String password) throws DAOException {
-        QueryExecutor executor = QueryExecutor.getInstance();
-        PreparedStatement statement = executor.getPreparedStatement(COUNT_LOGIN_N_PASSWORD);
-
-        ResultSet resultSet = null;
-        int result;
-        try {
-            statement.setString(1, login);
-            statement.setString(1, password);
-            resultSet = statement.executeQuery();
-            resultSet.next();
-            result = resultSet.getInt(1);
-        } catch (SQLException e) {
-            Logger.getLogger(SQLUserDAO.class).info(e.getMessage());
-            throw new DAOException("Failed execution statement", e);
-        } finally {
-            executor.close();
-        }
-        return result >= 1;
-    }
-
-    public User selectUserByLoginAndPassword(String login, String password) throws DAOException {
-        User user = new User();
-        QueryExecutor executor = QueryExecutor.getInstance();
-
-        PreparedStatement statement = executor.getPreparedStatement(FIND_USER_BY_LOGIN_N_PASSWORD);
-
-        ResultSet foundUser = null;
-        try {
-            statement.setString(1, login);
-            statement.setString(2, password);
-            foundUser = statement.executeQuery();
-        } catch (SQLException e) {
-            Logger.getLogger(SQLUserDAO.class).info(e.getMessage());
-            throw new DAOException("Failed execution statement", e);
-        } finally {
-            executor.close();
-        }
-        try {
-            if (foundUser.next()) {
-                user.setId(foundUser.getLong(1));
-                user.setRole(foundUser.getInt(4));
-                user.setLogin(login);
-                user.setPassword(password);
-            }
-        } catch (SQLException e) {
-            Logger.getLogger(SQLUserDAO.class).info(e.getMessage());
-            throw new DAOException("User not found", e);
+        ResultSet resultSet = executor.select(SELECT_BY_LOGIN_N_PASSWORD,login,password);
+        User user = null;
+        List<User> userList = convertToList(resultSet);
+        executor.close();
+        if (userList.size() > 0) {
+            user = userList.get(0);
         }
         return user;
     }
 
-    public boolean insertUser(String login, String password, int idrole) throws DAOException {
+    @Override
+    public boolean registration(RegistrationInfo regInfo) throws DAOException {
+        addUser(regInfo.getLogin(), regInfo.getPassword(), Role.CLIENT.getIdRole(), UserStatus.ACTIVE.getId());
+        UserDetailDAO userDetailDAO = new SQLUserDetailDAO();
+        int id = getUserId(regInfo.getLogin());
+        return userDetailDAO.addUserDetail(id) &&
+                    userDetailDAO.updateParameter(Parameter.EMAIL, id, regInfo.getUserDetail().getEmail());
+
+    }
+
+    public List<User> convertToList(ResultSet resultSet) {
+        List<User> userList = new ArrayList<>();
+        if (resultSet != null) {
+            try {
+                while (resultSet.next()) {
+                    userList.add(new User(resultSet.getInt(1),
+                            resultSet.getString(2),
+                            resultSet.getString(3),
+                            resultSet.getInt(4),
+                            resultSet.getInt(5)));
+                }
+            } catch (SQLException e) {
+                Logger.getLogger(SQLServiceDAO.class).info(e.getMessage());
+            }
+        }
+        return userList;
+    }
+
+
+
+    public boolean check(String login) throws DAOException {
 
         QueryExecutor executor = QueryExecutor.getInstance();
-        PreparedStatement statement = executor.getPreparedStatement(INSERT_USER);
-        int result;
+        ResultSet resultSet = executor.select(CHECK_BY_LOGIN, login);
+        int result = 0;
         try {
-            statement.setString(1,login);
-            statement.setString(2, password);
-            statement.setInt(3,2);
-            result = statement.executeUpdate();
+            if(resultSet.next()) {
+                result = resultSet.getInt(1);
+            }
         } catch (SQLException e) {
-            Logger.getLogger(SQLUserDAO.class).info(e.getMessage());
-            throw new DAOException("Failed to add user",e);
+            Logger.getLogger(SQLUserDAO.class).info(e);
+            throw new DAOException("failed in checking user by login", e);
+        } finally {
+            executor.close();
         }
         return result >= 1;
     }
 
-    public long getUserId(String login) throws DAOException {
+    public boolean check(String login, String password) throws DAOException {
         QueryExecutor executor = QueryExecutor.getInstance();
-        PreparedStatement statement = executor.getPreparedStatement(SELECT_USER_ID);
-        ResultSet foundUser = null;
-        int userId;
+        ResultSet resultSet = executor.select(CHECK_BY_LOGIN_N_PASSWORD, login, password);
+        int result=0;
         try {
-            statement.setString(1, login);
-            foundUser = statement.executeQuery();
-            foundUser.next();
-            userId = foundUser.getInt(1);
+            if(resultSet.next()) {
+                result = resultSet.getInt(1);
+            }
         } catch (SQLException e) {
-            Logger.getLogger(SQLUserDAO.class).info(e.getMessage());
-            throw new DAOException("Failed execution statement", e);
-        } finally {
-            executor.close();
+            throw new DAOException("failed in checking user by login and password", e);
+        }
+        return result >= 1;
+    }
+
+    @Override
+    public boolean delete(int userId) throws DAOException {
+        QueryExecutor executor = QueryExecutor.getInstance();
+        int deleteLogin = executor.update(DELETE_LOGIN);
+        int deletePassword = executor.update(DELETE_PASSWORD);
+        int updateResult = executor.update(UPDATE_STATUS, UserStatus.DELETED.getId());
+        executor.close();
+        return deleteLogin == 1 && deletePassword == 1 && updateResult ==1;
+    }
+
+    public boolean addUser(String login, String password, int idrole, int idStatus) throws DAOException {
+        QueryExecutor executor = QueryExecutor.getInstance();
+        int result = executor.update(INSERT_USER, login, password, idrole, idStatus);
+        executor.close();
+        return result > 0;
+    }
+
+    public int getUserId(String login) throws DAOException {
+        QueryExecutor executor = QueryExecutor.getInstance();
+        ResultSet resultSet = executor.select(SELECT_ID_BY_LOGIN, login);
+        int userId=0;
+        try {
+            if (resultSet.next()) {
+                userId = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("failed in getting userId", e);
         }
         return userId;
+    }
+
+    public List<User> getBy(Parameter parameter, Object value) throws DAOException {
+        QueryExecutor executor = QueryExecutor.getInstance();
+        ResultSet resultSet = null;
+        switch (parameter) {
+            case LOGIN:
+                resultSet = executor.select(SELECT_BY_LOGIN, value);
+                break;
+            case ROLE:
+                resultSet = executor.select(SELECT_BY_ROLE, value);
+                break;
+            case STATUS:
+                resultSet = executor.select(SELECT_BY_STATUS, value);
+                break;
+            case ID:
+                resultSet = executor.select(SELECT_BY_ID, value);
+                break;
+            default:
+                resultSet = executor.select(SELECT_ALL);
+                break;
+        }
+        List <User> userList = convertToList(resultSet);
+        executor.close();
+        return userList;
+    }
+
+    public boolean update(Parameter parameter, User user, Object value) throws DAOException {
+        QueryExecutor executor = QueryExecutor.getInstance();
+        int result;
+        switch (parameter) {
+            case PASSWORD:
+                result = executor.update(UPDATE_PASSWORD, value, user.getId());
+                break;
+            case STATUS:
+                result = executor.update(UPDATE_STATUS, value, user.getId());
+                break;
+            case ROLE:
+                result = executor.update(UPDATE_ROLE, value, user.getId());
+                break;
+            default: result = 0;
+        }
+        executor.close();
+        return result == 1;
     }
 }

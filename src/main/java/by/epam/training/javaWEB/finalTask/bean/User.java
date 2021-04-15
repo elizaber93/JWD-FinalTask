@@ -4,10 +4,13 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class User implements Serializable {
-    private Long id;
+    private int id;
     private String login;
     private String password;
     private int role;
+    private int status;
+
+    private UserDetail userDetail = new UserDetail();
 
     public User() {
     }
@@ -18,11 +21,34 @@ public class User implements Serializable {
         this.role = role;
     }
 
-    public Long getId() {
+    public User(int id, String login, String password, int role) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.role = role;
+    }
+
+    public User(int id, String login, String password, int role, int status) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.role = role;
+        this.status = status;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
