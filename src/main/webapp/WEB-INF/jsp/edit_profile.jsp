@@ -67,28 +67,23 @@
                    <jsp:include page="/WEB-INF/jsp/header.jsp"/>
         <!-- End Header Style -->
         <!-- Start Bradcaump area -->
-        <div class="ht__bradcaump__area" style="background: rgba(0, 0, 0, 0) url(images/bg/2.jpg) no-repeat scroll center center / cover ;">
-            <div class="ht__bradcaump__wrap">
+        <div class="ht__bradcaump__area" style="background: SkyBlue no-repeat scroll center center / cover ;">
+            
                 <div class="container">
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="bradcaump__inner text-center">
                                 <h2 class="bradcaump-title">${edit}</h2>
-                                <nav class="bradcaump-inner">
-                                  <a class="breadcrumb-item" href="Controller?command=goto&page=index">${home}</a>
-                                  <span class="brd-separetor">/</span>
-                                  <span class="breadcrumb-item active">${edit}</span>
-                                </nav>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            
         </div>
         <!-- End Bradcaump area -->
         <!-- Start Login Register Area -->
-        <div class="htc__login__register bg__white ptb--130">
-            <div class="container">
+        <div class="htc__login__register bg__white ptb--20">
+            
                 
                 <!-- Start Login Register Content -->
                 <div class="row">
@@ -97,16 +92,16 @@
                             <!-- Start Single Content -->
 							
 								 
-                            <div id="login" role="tabpanel" class="single__tabs__panel tab-pane fade in active">
+                            
                                 <form id= "detail_form" action="Controller" class="login" method="post">
 									<input type="hidden" name="command" value="save_user_detail"/>
 									<p>${firstname}</p>
                                     <input type="text" name="firstname" value="${detail.firstName}">
                                     <p>${lastname}</p>
 									<input type="text" name="lastname" value="${detail.lastName}">
-									<p>${phone}</p>
+									<p>${phone}
 									<input type="text" name="phone" value="${detail.phone}">
-									<p>${email}</p>
+									${email}</p>
 									<input type="text" name="email" value="${detail.email}">
 									<p>${address}</p>
 									<input type="text" name="address" value="${detail.address}">
@@ -119,26 +114,13 @@
                                 </div>
                                 
                                 
-                            </div>
                             <!-- End Single Content -->
                             <!-- Start Single Content -->
-                            <div id="register" role="tabpanel" class="single__tabs__panel tab-pane fade">
-                                <form id= "reg_form" action="Controller" class="login" method="post">
-									<input type="hidden" name="command" value="registration"/>
-                                    <input type="text" name="login_reg" placeholder="Name*">
-                                    <input type="email" name="email" placeholder="Email*">
-                                    <input type="password" name="password_reg" placeholder="Password*">
-                                </form>
-                               
-                                <div class="htc__login__btn">
-                                    <a href="#" onclick="document.getElementById('reg_form').submit();return false" >${reg}</a>
-                                </div>
-                                
-                            </div>
+                            
                             <!-- End Single Content -->
                         </div>
                     </div>
-                </div>
+                
                 <!-- End Login Register Content -->
             </div>
         </div>

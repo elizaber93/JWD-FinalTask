@@ -64,7 +64,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="bradcaump__inner text-center">
-                                <h2 class="bradcaump-title">Suppliers</h2>
+                                <h2 class="bradcaump-title">Products</h2>
                             </div>
                         </div>
                     </div>
@@ -79,29 +79,29 @@
                       <!-- Start Login Register Content -->
                 <div class="row">
                      <!-- Start Single Content -->
-							<c:set target="${java.util.ArrayList}" var="suppliers" value="${requestScope.supplierList}"/>
+							<c:set target="${java.util.ArrayList}" var="products" value="${requestScope.productList}"/>
 							
                             <table>
 								<tr><td></td>
 									<td>Name</td>
-									<td>Requisites</td>
+									<td>Description</td>
 								</tr>
-								<c:forEach var="supplier" items="${suppliers}">
-										<c:set target="${Supplier}" var="supp" value="${supplier}"/> 
-									<form id="${supp.idSupplier}">
+								<c:forEach var="product" items="${products}">
+										<c:set target="${Product}" var="prod" value="${product}"/> 
+									<form id="${prod.idProduct}">
 							<tr>
 							
 							<td>
-							<input type= "hidden" name="command" value="update_supplier"/>
-							<input type="hidden" name="id" value="${supp.idSupplier}"/></td>
-							<td><input type="text" name="name" value="${supp.name}" disabled="true"/></td>
-							<td><input type="text" name="requisites" value="${supp.requisites}" disabled="true"/></td>
+							<input type= "hidden" name="command" value="update_product"/>
+							<input type="hidden" name="id" value="${prod.idProduct}"/></td>
+							<td><input type="text" name="name" value="${prod.name}" disabled="true"/></td>
+							<td><input type="text" name="description" value="${prod.description}" disabled="true"/></td>
 							
-							<td><a href="#" onclick="document.getElementById('${supp.idSupplier}').name.disabled=false;
-													document.getElementById('${supp.idSupplier}').requisites.disabled=false;return false">Edit</a>
+							<td><a href="#" onclick="document.getElementById('${prod.idProduct}').name.disabled=false;
+													document.getElementById('${prod.idProduct}').description.disabled=false;return false">Edit</a>
                             </td>
 							<td>/</td>
-							<td><a href="#" onclick="document.getElementById('${supp.idSupplier}').submit();return false">Save</a>
+							<td><a href="#" onclick="document.getElementById('${prod.idProduct}').submit();return false">Save</a>
                             </td>
 							</tr>
 							</form>
@@ -111,7 +111,7 @@
                           
 				    
 				</div>
-				<a href="Controller?command=goto&page=add_supplier">Add supplier</a>
+				<a href="Controller?command=goto&page=add_product">Add product</a>
              
             </div>
         </div>

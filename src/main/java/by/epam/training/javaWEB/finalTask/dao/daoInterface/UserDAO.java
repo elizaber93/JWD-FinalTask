@@ -14,5 +14,7 @@ public interface UserDAO {
     boolean check(String login, String password) throws DAOException;
     boolean delete(int userId) throws DAOException;
     List<User> getBy(Parameter parameter, Object value) throws DAOException;
+    List<User> getUserList() throws DAOException;
+    boolean update(Parameter parameter, int id, Object value) throws DAOException;
 
 }

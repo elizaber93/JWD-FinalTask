@@ -9,8 +9,18 @@ public class Service implements Serializable {
     private double price;
     private String description;
     private double totalRating;
+    private String category;
+    private String status;
 
     public Service() {
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Service(int idService, String name, double price, String description, double totalRating) {
@@ -19,6 +29,14 @@ public class Service implements Serializable {
         this.price = price;
         this.description = description;
         this.totalRating = totalRating;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public int getIdService() {
@@ -86,6 +104,7 @@ public class Service implements Serializable {
                 ", price=" + price +
                 ", description='" + description + '\'' +
                 ", totalRating=" + totalRating +
+                ", category='" + category + '\'' +
                 '}';
     }
 }

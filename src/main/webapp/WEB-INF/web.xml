@@ -32,6 +32,6 @@
 
 	<filter-mapping>
 		<filter-name>CharsetFilter</filter-name>
-		<url-pattern>/CharsetFilter</url-pattern>
+		<url-pattern>/Controller</url-pattern>
 	</filter-mapping>
 </web-app>

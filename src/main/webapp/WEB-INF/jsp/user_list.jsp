@@ -99,9 +99,10 @@
 									<td>Status</td>
 								</tr>
 								<c:forEach var="user" items="${users}">
-										<c:set target="${Supplier}" var="us" value="${user}"/> 
-										<c:set targer="${UserDetail}" var = "detail" value="${us.userDetail}"/>
-									<form id="${us.idUser}">
+										<c:set target="${User}" var="us" value="${user}"/> 
+										<c:set target="${UserDetail}" var = "detail" value="${us.userDetail}"/>
+										<c:if test="${us.status ne 'DELETED'}">
+									<form id="${us.id}">
 							<tr>
 							
 							<td>
@@ -109,34 +110,75 @@
 							<input type="hidden" name="id" value="${us.id}"/></td>
 							<td><input type="text" name="login" value="${us.login}" disabled="true"/></td>
 							<td><input type="text" name="password" value="${us.password}" disabled="true"/></td>
-							<td><input type="text" name="firstname" value="${us.firstName}" disabled="true"/></td>
-							<td><input type="text" name="lastname" value="${us.lastName}" disabled="true"/></td>
-							<td><input type="text" name="phone" value="${us.phone}" disabled="true"/></td>
-							<td><input type="text" name="email" value="${us.email}" disabled="true"/></td>
-							<td><input type="text" name="address" value="${us.address}" disabled="true"/></td>
-							<td><input type="text" name="role" value="${us.role}" disabled="true"/></td>
-							<td><input type="text" name="status" value="${us.status}" disabled="true"/></td>
+							<td><input type="text" name="firstname" value="${detail.firstName}" disabled="true"/></td>
+							<td><input type="text" name="lastname" value="${detail.lastName}" disabled="true"/></td>
+							<td><input type="text" name="phone" value="${detail.phone}" disabled="true"/></td>
+							<td><input type="text" name="email" value="${detail.email}" disabled="true"/></td>
+							<td><input type="text" name="address" value="${detail.address}" disabled="true"/></td>
+							<td><select  disabled="true" name="role">
+							<c:set target="${java.util.HashMap}" var="roles" value="${requestScope.roles}"/>
+							<c:forEach var="role" items="${roles}">
+							<c:choose>
+							<c:when test="${role.value eq us.role}">
+							<option selected="true" value="${role.key}">${role.value}</option>
+							</c:when>
+							<c:otherwise>
+							<option value="${role.key}">${role.value}</option>
+							</c:otherwise>
+							</c:choose>
+							</c:forEach>
+							</select></p></td>
+							<td><select  disabled="true" name="status">
+							<c:set target="${java.util.HashMap}" var="statusList" value="${requestScope.statusMap}"/>
+							<c:forEach var="status" items="${statusList}">
+							<c:choose>
+							<c:when test="${status.value eq us.status}">
+							<option selected="true" value="${status.key}">${status.value}</option>
+							</c:when>
+							<c:otherwise>
+							<option value="${status.key}">${status.value}</option>
+							</c:otherwise>
+							</c:choose>
+							</c:forEach>
+							</select></p></td>
 							
-							<td><a href="#" onclick="document.getElementById('${supp.idSupplier}').name.disabled=false;
-													document.getElementById('${supp.idSupplier}').requisites.disabled=false;return false">Edit</a>
+							
+							
+			
+							<td><a id="edit_link" href="#" onclick="
+													document.getElementById('${us.id}').password.disabled=false;
+													document.getElementById('${us.id}').firstname.disabled=false;
+													document.getElementById('${us.id}').lastname.disabled=false;
+													document.getElementById('${us.id}').phone.disabled=false;
+													document.getElementById('${us.id}').email.disabled=false;
+													document.getElementById('${us.id}').address.disabled=false;
+													document.getElementById('${us.id}').role.disabled=false;
+													document.getElementById('${us.id}').status.disabled=false;
+													document.getElementById('save_link').disabled=false;
+													return false">Edit</a>
                             </td>
-							
-							<td><a href="#" onclick="document.getElementById('${supp.idSupplier}').submit();return false">Save</a>
+							<td>/</td>
+							<td><a id="save_link" disabled="true" href="Controller?command=see_users" onclick="document.getElementById('${us.id}').submit();return false">Save</a>
                             </td>
 							</tr>
 							</form>
+							</c:if>
 									</c:forEach>
+									
 								
 						</table>
                           
 				    
 				</div>	
+			
              
             </div>
         </div>
         <!-- End Login Register Area -->
         <jsp:include page="/WEB-INF/jsp/footer.jsp"/>
 		</div>
+		
+	
 
     <!-- jquery latest version -->
     <script src="js/vendor/jquery-1.12.0.min.js"></script>

@@ -63,11 +63,11 @@ public class QueryExecutor {
                 }
             }
             resultSet = statement.executeQuery();
-            return resultSet;
+
         } catch (SQLException e) {
-            Logger.getLogger(QueryExecutor.class).info(e.getMessage());
             throw new DAOException("Failed statement execution in SQLDAO", e);
         }
+        return resultSet;
     }
 
     public int update(String query, Object ... value) throws DAOException {
@@ -90,8 +90,7 @@ public class QueryExecutor {
             }
             result = statement.executeUpdate();
         } catch (SQLException e) {
-            Logger.getLogger(QueryExecutor.class).info(e.getMessage());
-            throw new DAOException("Failed statement execution", e);
+            throw new DAOException(e);
         }
         return result;
     }

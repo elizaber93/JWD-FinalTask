@@ -40,20 +40,8 @@ public class LogIn implements Command {
             HttpSession session = request.getSession(true);
             session.setAttribute("auth", true);
             session.setAttribute("userId",user.getId());
-            switch (user.getRole()) {
-                case 1:
-                    session.setAttribute("role", Role.ADMIN);
-                    break;
-                case 2:
-                    session.setAttribute("role", Role.CLIENT);
-                    break;
-                case 3:
-                    session.setAttribute("role",Role.COURIER);
-                    break;
-                case 4:
-                    session.setAttribute("role", Role.SERVICE_STAFF);
-                    break;
-            }
+            session.setAttribute("role", user.getRole());
+
 
 
 

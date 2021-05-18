@@ -1,8 +1,11 @@
 package by.epam.training.javaWEB.finalTask.service;
 
+import by.epam.training.javaWEB.finalTask.bean.Product;
+import by.epam.training.javaWEB.finalTask.service.impl.ProductServiceImpl;
 import by.epam.training.javaWEB.finalTask.service.impl.SupplierServiceImpl;
 import by.epam.training.javaWEB.finalTask.service.impl.UserServiceImpl;
 import by.epam.training.javaWEB.finalTask.service.impl.ValidationServiceImpl;
+import by.epam.training.javaWEB.finalTask.service.serviceInterface.ProductService;
 import by.epam.training.javaWEB.finalTask.service.serviceInterface.SupplierService;
 import by.epam.training.javaWEB.finalTask.service.serviceInterface.UserService;
 import by.epam.training.javaWEB.finalTask.service.serviceInterface.ValidationService;
@@ -12,6 +15,7 @@ public final class ServiceProvider {
 
     private ServiceProvider() {}
 
+    private final ProductService productService = new ProductServiceImpl();
     private final UserService userService = new UserServiceImpl();
     private final ValidationService validationService = new ValidationServiceImpl();
     private final SupplierService supplierService = new SupplierServiceImpl();
@@ -29,6 +33,10 @@ public final class ServiceProvider {
 
     public SupplierService getSupplierService() {
         return supplierService;
+    }
+
+    public ProductService getProductService() {
+        return productService;
     }
 
     /*public NewsService getNewsService() {

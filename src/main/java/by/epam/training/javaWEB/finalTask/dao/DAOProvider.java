@@ -1,13 +1,7 @@
 package by.epam.training.javaWEB.finalTask.dao;
 
-import by.epam.training.javaWEB.finalTask.dao.daoInterface.SupplierDAO;
-import by.epam.training.javaWEB.finalTask.dao.daoInterface.SupplyDAO;
-import by.epam.training.javaWEB.finalTask.dao.daoInterface.UserDAO;
-import by.epam.training.javaWEB.finalTask.dao.daoInterface.UserDetailDAO;
-import by.epam.training.javaWEB.finalTask.dao.impl.SQLSupplierDAO;
-import by.epam.training.javaWEB.finalTask.dao.impl.SQLSupplyDAO;
-import by.epam.training.javaWEB.finalTask.dao.impl.SQLUserDAO;
-import by.epam.training.javaWEB.finalTask.dao.impl.SQLUserDetailDAO;
+import by.epam.training.javaWEB.finalTask.dao.daoInterface.*;
+import by.epam.training.javaWEB.finalTask.dao.impl.*;
 
 public class DAOProvider {
     private static final DAOProvider instance = new DAOProvider();
@@ -16,8 +10,20 @@ public class DAOProvider {
     private final UserDetailDAO userDetailDAO = new SQLUserDetailDAO();
     private final SupplyDAO supplyDAO = new SQLSupplyDAO();
     private final SupplierDAO supplierDAO = new SQLSupplierDAO();
-
+    private final ProductDetailDAO productDetailDAO = new SQLProductDetailDAO();
+    private final ProductDAO productDAO = new SQLProductDAO();
+    private final ServiceDAO serviceDAO = new SQLServiceDAO();
+    private final EnumDAO enumDAO = new SQLEnumDAO();
     private DAOProvider() {}
+
+    public EnumDAO getEnumDAO() {
+        return enumDAO;
+    }
+
+    public ServiceDAO getServiceDAO() {
+        return serviceDAO;
+    }
+
 
     public static DAOProvider getInstance() {
         return instance;
@@ -37,5 +43,13 @@ public class DAOProvider {
 
     public SupplierDAO getSupplierDAO() {
         return supplierDAO;
+    }
+
+    public ProductDetailDAO getProductDetailDAO() {
+        return productDetailDAO;
+    }
+
+    public ProductDAO getProductDAO() {
+        return productDAO;
     }
 }

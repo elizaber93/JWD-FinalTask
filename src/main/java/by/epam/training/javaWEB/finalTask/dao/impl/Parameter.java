@@ -27,6 +27,7 @@ public enum Parameter {
     PASSWORD,
     STATUS,
     ROLE,
-    LOGIN
+    LOGIN,
+    CATEGORY
 
 }

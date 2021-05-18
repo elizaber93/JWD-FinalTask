@@ -9,10 +9,11 @@ import java.util.List;
 public interface ProductDAO {
     boolean addProduct(Product product) throws DAOException;
     boolean deleteProduct(Product product) throws DAOException;
-    boolean update(Parameter parameter, Product product, Object value) throws DAOException;
+    boolean update(Parameter parameter, int id, Object value) throws DAOException;
     List<Product> getBy(Parameter parameter, Object ... value) throws DAOException;
     List<Product> getProductList() throws DAOException;
     boolean check(int id) throws DAOException;
     boolean check(String name) throws DAOException;
+    int getProductId(String name) throws DAOException;
 
 }

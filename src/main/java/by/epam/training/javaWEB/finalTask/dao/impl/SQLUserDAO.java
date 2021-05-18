@@ -20,9 +20,9 @@ public class SQLUserDAO implements UserDAO {
     private final String CHECK_BY_LOGIN = "select count(*) from users where login = ?;";
     private final String CHECK_BY_LOGIN_N_PASSWORD = "select count(*) from users where login = ? and password = ?;";
     private final String SELECT_ID_BY_LOGIN = "select (iduser) from users where login = ?;";
-    private final String UPDATE_STATUS = "update users set idstatus = ?;";
-    private final String UPDATE_ROLE = "update users set idrole = ?;";
-    private final String UPDATE_PASSWORD = "update users set password = ?;";
+    private final String UPDATE_STATUS = "update users set idstatus = ? where iduser = ?;";
+    private final String UPDATE_ROLE = "update users set idrole = ? where iduser = ?;";
+    private final String UPDATE_PASSWORD = "update users set password = ? where iduser = ?;";
     private final String DELETE_LOGIN = "update users set login = NULL where iduser = ?;";
     private final String DELETE_PASSWORD = "update users set password = NULL where iduser = ?;";
     private final String SELECT_BY_LOGIN = "select * from users where login = ?;";
@@ -162,18 +162,27 @@ public class SQLUserDAO implements UserDAO {
         return userList;
     }
 
-    public boolean update(Parameter parameter, User user, Object value) throws DAOException {
+    public List<User> getUserList() throws DAOException {
+        QueryExecutor executor = QueryExecutor.getInstance();
+        ResultSet resultSet = null;
+        resultSet = executor.select(SELECT_ALL);
+        List <User> userList = convertToList(resultSet);
+        executor.close();
+        return userList;
+    }
+
+    public boolean update(Parameter parameter, int id, Object value) throws DAOException {
         QueryExecutor executor = QueryExecutor.getInstance();
         int result;
         switch (parameter) {
             case PASSWORD:
-                result = executor.update(UPDATE_PASSWORD, value, user.getId());
+                result = executor.update(UPDATE_PASSWORD, value, id);
                 break;
             case STATUS:
-                result = executor.update(UPDATE_STATUS, value, user.getId());
+                result = executor.update(UPDATE_STATUS, value, id);
                 break;
             case ROLE:
-                result = executor.update(UPDATE_ROLE, value, user.getId());
+                result = executor.update(UPDATE_ROLE, value, id);
                 break;
             default: result = 0;
         }

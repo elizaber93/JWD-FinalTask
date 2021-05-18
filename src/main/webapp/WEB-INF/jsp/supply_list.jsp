@@ -64,7 +64,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="bradcaump__inner text-center">
-                                <h2 class="bradcaump-title">Suppliers</h2>
+                                <h2 class="bradcaump-title">Supplies</h2>
                             </div>
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                       <!-- Start Login Register Content -->
                 <div class="row">
                      <!-- Start Single Content -->
-							<c:set target="${java.util.ArrayList}" var="suppliers" value="${requestScope.supplierList}"/>
+							<c:set target="${java.util.ArrayList}" var="supplies" value="${requestScope.supplyList}"/>
 							
                             <table>
 								<tr><td></td>

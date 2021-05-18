@@ -2,8 +2,6 @@
 	pageEncoding="utf-8" %>
 
 
-<%@page import="java.util.List"%>
-<%@page import="java.util.ArrayList"%>
 
 <!doctype html>
 <html class="no-js" lang="en">
@@ -13,6 +11,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
+
+    
   <fmt:setLocale value="${sessionScope.locale}"/>
   <fmt:setBundle basename="local" var="loc"/>
   
@@ -22,7 +22,6 @@
   <fmt:message bundle="${loc}" key="local.sign_in" var="sign_in"/>
   <fmt:message bundle="${loc}" key="local.reg" var="reg"/>
   <fmt:message bundle="${loc}" key="local.nav.home" var = "home"/>
-  
 
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -58,63 +57,80 @@
 <div class="wrapper fixed__footer">
                    <jsp:include page="/WEB-INF/jsp/header.jsp"/>
         <!-- End Header Style -->
-		<div class="ht__bradcaump__area" style="background: SkyBlue no-repeat scroll center center / cover ;">
+        
+        <!-- Start Bradcaump area -->
+       <div class="ht__bradcaump__area" style="background: SkyBlue no-repeat scroll center center / cover ;">
             
                 <div class="container">
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="bradcaump__inner text-center">
-                                <h2 class="bradcaump-title">Suppliers</h2>
+                                <h2 class="bradcaump-title">Add supplier</h2>
                             </div>
                         </div>
                     </div>
                 </div>
             
         </div>
-        
-        
+		
+		<c:set target="${java.util.ArrayList}" var="products" value="${requestScope.productList}"/>
+		<datalist id="productList">
+			<c:forEach var="product" items="${products}">
+				<option value="${product}">${product}</option>
+			</c:forEach>
+		</datalist>
+		
+		<c:set target="${java.util.ArrayList}" var="suppliers" value="${requestScope.supplierList}"/>
+		<datalist id="supplierList">
+			<c:forEach var="supplier" items="${suppliers}">
+				<option value="${supplier}">${supplier}</option>
+			</c:forEach>
+		</datalist>
+		
+		
+		
+		
+        <!-- End Bradcaump area -->
         <!-- Start Login Register Area -->
-        <div class="htc__login__register bg__white ptb--20">
-            <div class="container">
-                      <!-- Start Login Register Content -->
+        
+                <!-- Start Login Register Content -->
                 <div class="row">
-                     <!-- Start Single Content -->
-							<c:set target="${java.util.ArrayList}" var="suppliers" value="${requestScope.supplierList}"/>
-							
-                            <table>
-								<tr><td></td>
-									<td>Name</td>
-									<td>Requisites</td>
-								</tr>
-								<c:forEach var="supplier" items="${suppliers}">
-										<c:set target="${Supplier}" var="supp" value="${supplier}"/> 
-									<form id="${supp.idSupplier}">
-							<tr>
-							
-							<td>
-							<input type= "hidden" name="command" value="update_supplier"/>
-							<input type="hidden" name="id" value="${supp.idSupplier}"/></td>
-							<td><input type="text" name="name" value="${supp.name}" disabled="true"/></td>
-							<td><input type="text" name="requisites" value="${supp.requisites}" disabled="true"/></td>
-							
-							<td><a href="#" onclick="document.getElementById('${supp.idSupplier}').name.disabled=false;
-													document.getElementById('${supp.idSupplier}').requisites.disabled=false;return false">Edit</a>
-                            </td>
-							<td>/</td>
-							<td><a href="#" onclick="document.getElementById('${supp.idSupplier}').submit();return false">Save</a>
-                            </td>
-							</tr>
-							</form>
-									</c:forEach>
+                    <div class="col-md-6 col-md-offset-3">
+                        
+                            <!-- Start Single Content -->
+                            <div id="login" role="tabpanel" class="single__tabs__panel tab-pane fade in active">
+                                
 								
-						</table>
-                          
-				    
-				</div>
-				<a href="Controller?command=goto&page=add_supplier">Add supplier</a>
-             
-            </div>
-        </div>
+								<form id= "supply_form" action="Controller" method="post">
+								
+									<input type="hidden" name="command" value="add_supply"/>
+									<table>
+									<tr>
+								<td>Product</td>
+                                    <td><input type="text" name="product" list="productList"/></td></tr>
+								<tr><td>Supplier</td>	
+								<td><input type="text" name="supplier" list="supplierList"/></td></tr>
+								<tr><td>Document</td>
+			                        <td><input type="text" name="document"/></td></tr>
+								<tr><td>Date</td>
+									<td><input type="date" name = "date"/></td></tr>
+								<tr><td>Price</td>
+									<td><input type="text" name="price"/></td></tr>
+								<tr><td>Count</td>
+								<td><input type="number" name="count" value="1" min="1" step="1"/></td></tr>
+								</table>
+						        </form>
+                               <div class="htc__login__btn mt--30">
+                                    <a href="#" onclick="document.getElementById('supply_form').submit();return false" >Add</a>
+                                </div>
+                                
+                                
+                            </div>
+							
+                        </div>  
+				
+				</div>	
+           
         <!-- End Login Register Area -->
         <jsp:include page="/WEB-INF/jsp/footer.jsp"/>
 		</div>

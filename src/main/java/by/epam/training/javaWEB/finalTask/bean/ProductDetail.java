@@ -57,6 +57,14 @@ public class ProductDetail implements Serializable {
         this.value = value;
     }
 
+    public String getPropertyName() {
+        return propertyName;
+    }
+
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

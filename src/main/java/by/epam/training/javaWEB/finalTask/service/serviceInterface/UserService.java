@@ -17,4 +17,5 @@ public interface UserService {
     boolean deleteUser(User user) throws ServiceException;
     UserDetail getUserDetail(int userId) throws ServiceException;
     List<User> getUserList() throws ServiceException;
+    boolean updateUser(int userId, User user) throws ServiceException;
 }

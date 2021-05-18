@@ -2,8 +2,6 @@
 	pageEncoding="utf-8" %>
 
 
-<%@page import="java.util.List"%>
-<%@page import="java.util.ArrayList"%>
 
 <!doctype html>
 <html class="no-js" lang="en">
@@ -13,6 +11,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
+
+    
   <fmt:setLocale value="${sessionScope.locale}"/>
   <fmt:setBundle basename="local" var="loc"/>
   
@@ -22,12 +22,10 @@
   <fmt:message bundle="${loc}" key="local.sign_in" var="sign_in"/>
   <fmt:message bundle="${loc}" key="local.reg" var="reg"/>
   <fmt:message bundle="${loc}" key="local.nav.home" var = "home"/>
-  
 
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>${title}</title>
-    <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <!-- Place favicon.ico in the root directory -->
@@ -55,69 +53,76 @@
 </head>
 
 <body>
-<div class="wrapper fixed__footer">
-                   <jsp:include page="/WEB-INF/jsp/header.jsp"/>
+	<div class="wrapper fixed__footer">
+        <jsp:include page="/WEB-INF/jsp/header.jsp"/>
         <!-- End Header Style -->
-		<div class="ht__bradcaump__area" style="background: SkyBlue no-repeat scroll center center / cover ;">
+        
+        <!-- Start Bradcaump area -->
+       <div class="ht__bradcaump__area" style="background: SkyBlue no-repeat scroll center center / cover ;">
             
                 <div class="container">
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="bradcaump__inner text-center">
-                                <h2 class="bradcaump-title">Suppliers</h2>
+                                <h2 class="bradcaump-title">Add Service</h2>
                             </div>
                         </div>
                     </div>
                 </div>
             
         </div>
-        
-        
-        <!-- Start Login Register Area -->
+	
         <div class="htc__login__register bg__white ptb--20">
-            <div class="container">
-                      <!-- Start Login Register Content -->
-                <div class="row">
-                     <!-- Start Single Content -->
-							<c:set target="${java.util.ArrayList}" var="suppliers" value="${requestScope.supplierList}"/>
-							
-                            <table>
-								<tr><td></td>
-									<td>Name</td>
-									<td>Requisites</td>
-								</tr>
-								<c:forEach var="supplier" items="${suppliers}">
-										<c:set target="${Supplier}" var="supp" value="${supplier}"/> 
-									<form id="${supp.idSupplier}">
-							<tr>
-							
-							<td>
-							<input type= "hidden" name="command" value="update_supplier"/>
-							<input type="hidden" name="id" value="${supp.idSupplier}"/></td>
-							<td><input type="text" name="name" value="${supp.name}" disabled="true"/></td>
-							<td><input type="text" name="requisites" value="${supp.requisites}" disabled="true"/></td>
-							
-							<td><a href="#" onclick="document.getElementById('${supp.idSupplier}').name.disabled=false;
-													document.getElementById('${supp.idSupplier}').requisites.disabled=false;return false">Edit</a>
-                            </td>
-							<td>/</td>
-							<td><a href="#" onclick="document.getElementById('${supp.idSupplier}').submit();return false">Save</a>
-                            </td>
-							</tr>
-							</form>
-									</c:forEach>
-								
-						</table>
-                          
-				    
-				</div>
-				<a href="Controller?command=goto&page=add_supplier">Add supplier</a>
-             
-            </div>
+               
+        <div class="htc__login__register__wrap">
+		
+		<c:set target="${java.util.Map}" var="categories" value="${requestScope.categories}"/>
+            <form id= "service_form" action="Controller" method="post">
+			<table id="tableId">
+			<tr>
+			
+			<input type="hidden" name="command" value="add_service"/>
+           
+			<td width="50%">Category</td>
+			<td>
+			<select name="category">
+			<c:forEach var="category" items="${categories}">
+			<option value="${category.value}">${category.value}</option>
+			</c:forEach>
+			</select>
+			</td>
+			</tr>
+			<tr><td></td></tr>
+			<tr>
+			<td width="50%">Service name</td>
+			<td>
+			<input type="text" name="name" placeholder="Service Name*"/>
+			</td>
+			</tr>
+			<tr>
+			<td>Description</td>
+			<td>
+                <input name="description" placeholder="Description*"/>					
+			</td>
+			</tr>
+			<tr>
+			<td>Price</td>
+			<td>
+                <input name="price" placeholder="Price*"/>					
+			</td>
+			</tr>
+			
+			</table>
+			</form>
+			<div class="htc__login__btn mt--30">
+				<a href="#" onclick="document.getElementById('service_form').submit();return false" >Add</a>
+			</div>                        
         </div>
-        <!-- End Login Register Area -->
-        <jsp:include page="/WEB-INF/jsp/footer.jsp"/>
 		</div>
+		
+							
+        <jsp:include page="/WEB-INF/jsp/footer.jsp"/>
+	</div>
 
     <!-- jquery latest version -->
     <script src="js/vendor/jquery-1.12.0.min.js"></script>

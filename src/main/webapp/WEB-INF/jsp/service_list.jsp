@@ -64,44 +64,82 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="bradcaump__inner text-center">
-                                <h2 class="bradcaump-title">Suppliers</h2>
+                                <h2 class="bradcaump-title">Services</h2>
                             </div>
                         </div>
                     </div>
                 </div>
             
         </div>
-        
-        
+        Select by status
+        <form id="status">
+		<select name="stat">
+		<c:set target="${java.util.Map}" var="statusList" value="${requestScope.statuses}"/>
+		<c:forEach var="status" items="${statusList}">
+		<option value="${status.value}">${status.value}</option>
+		</c:forEach>
+		</select>
+		</form>
+	
+		
+		
+		
         <!-- Start Login Register Area -->
         <div class="htc__login__register bg__white ptb--20">
             <div class="container">
                       <!-- Start Login Register Content -->
                 <div class="row">
+				<c:if test="${document.getElementById('status').stat eq 'ACTIVE'}">
                      <!-- Start Single Content -->
-							<c:set target="${java.util.ArrayList}" var="suppliers" value="${requestScope.supplierList}"/>
+							<c:set target="${java.util.ArrayList}" var="services" value="${requestScope.serviceList}"/>
 							
                             <table>
 								<tr><td></td>
+									<td>Category </td>
 									<td>Name</td>
-									<td>Requisites</td>
+									<td>Description</td>
+									<td>Price</td>
 								</tr>
-								<c:forEach var="supplier" items="${suppliers}">
-										<c:set target="${Supplier}" var="supp" value="${supplier}"/> 
-									<form id="${supp.idSupplier}">
+								<c:forEach var="service" items="${services}">
+										<c:set target="${Service}" var="serv" value="${service}"/>
+										
+									<form id="${serv.idService}">
 							<tr>
 							
 							<td>
-							<input type= "hidden" name="command" value="update_supplier"/>
-							<input type="hidden" name="id" value="${supp.idSupplier}"/></td>
-							<td><input type="text" name="name" value="${supp.name}" disabled="true"/></td>
-							<td><input type="text" name="requisites" value="${supp.requisites}" disabled="true"/></td>
+							<input type= "hidden" name="command" value="update_service"/>
+							<input type="hidden" name="id" value="${serv.idService}"/></td>
 							
-							<td><a href="#" onclick="document.getElementById('${supp.idSupplier}').name.disabled=false;
-													document.getElementById('${supp.idSupplier}').requisites.disabled=false;return false">Edit</a>
+							<td><select  disabled="true" name="category">
+							<c:set target="${java.util.Map}" var="categoryList" value="${requestScope.categories}"/>
+							<c:forEach var="category" items="${categoryList}">
+							<c:choose>
+							<c:when test="${category.value eq serv.category}">
+							<option selected="true" value="${category.value}">${category.value}</option>
+							</c:when>
+							<c:otherwise>
+							<option value="${category.value}">${category.value}</option>
+							</c:otherwise>
+							</c:choose>
+							</c:forEach>
+							</select></p></td>
+							
+							
+							
+							
+							
+							<td><input type="text" name="name" value="${serv.name}" disabled="true"/></td>
+							<td><input type="text" name="description" value="${serv.description}" disabled="true"/></td>
+							<td><input type="text" name="price" value="${serv.price}" disabled="true"/></td>
+							
+							<td width="20px"><a href="#" onclick="document.getElementById('${serv.idService}').category.disabled=false;
+													document.getElementById('${serv.idService}').name.disabled=false;
+													document.getElementById('${serv.idService}').price.disabled=false;
+													document.getElementById('${serv.idService}').description.disabled=false;return false" class="ti-pencil"></a>
                             </td>
-							<td>/</td>
-							<td><a href="#" onclick="document.getElementById('${supp.idSupplier}').submit();return false">Save</a>
+							<td width="20px"><a id="save_link" disabled="true" href="Controller?command=see_services" onclick="document.getElementById('${serv.idService}').submit();return false" class="ti-save"></a>
+                            </td>
+							<td width="20px"><a id="delete_link" href="Controller?command=delete_service&id='${document.getElementById('${serv.idService}')}'" class="ti-trash"></a>
                             </td>
 							</tr>
 							</form>
@@ -109,9 +147,9 @@
 								
 						</table>
                           
-				    
+				    </c:if>
 				</div>
-				<a href="Controller?command=goto&page=add_supplier">Add supplier</a>
+				<a href="Controller?command=service_addition">Add service</a>
              
             </div>
         </div>

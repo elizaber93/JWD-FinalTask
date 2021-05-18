@@ -1138,7 +1138,7 @@
         height: 100px;
     }
     .header--3 .logo {
-        height: 100px;
+        height: 10px;
     }
     .header--3 .mean-container .mean-bar {
         min-height: 0;
@@ -1298,11 +1298,12 @@
         font-size: 22px;
     }
     .bradcaump-inner {
-        margin-top: 5px;
+        margin-top: 10px;
     }
     .ht__bradcaump__wrap {
-        height: 220px;
+        height:50px;
     }
+	
     .breadcrumb-item.active {
         font-size: 14px;
     }

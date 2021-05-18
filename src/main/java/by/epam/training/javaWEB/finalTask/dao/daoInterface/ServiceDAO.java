@@ -12,5 +12,5 @@ public interface ServiceDAO {
     boolean deleteService(Service service) throws DAOException;
     List<Service> getBy(Parameter parameter, Object ... value) throws DAOException;
     List<Service> getServiceList() throws DAOException;
-    boolean update(Parameter parameter, Service service, Object value) throws DAOException;
+    boolean update(Parameter parameter, int serviceId, Object value) throws DAOException;
 }

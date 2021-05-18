@@ -36,6 +36,16 @@ public class ServiceBuilder {
         return this;
     }
 
+    public ServiceBuilder setCategory(String name) {
+        this.service.setCategory(name);
+        return this;
+    }
+
+    public ServiceBuilder setStatus(String status) {
+        this.service.setStatus(status);
+        return this;
+    }
+
     public Service build() {
         return this.service;
     }

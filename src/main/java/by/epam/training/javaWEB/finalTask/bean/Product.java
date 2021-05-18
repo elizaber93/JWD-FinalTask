@@ -134,6 +134,7 @@ public class Product implements Serializable {
                 ", imageLink='" + imageLink + '\'' +
                 ", totalQuantity=" + totalQuantity +
                 ", totalRating=" + totalRating +
+                ", details=" + details +
                 '}';
     }
 }

@@ -8,11 +8,17 @@ public enum Page {
     ADD_SUPPLIER("/WEB-INF/jsp/add_supplier.jsp"),
     EDIT_PROFILE("/WEB-INF/jsp/edit_profile.jsp"),
     SUPPLIER_LIST("/WEB-INF/jsp/supplier_list.jsp"),
-    ADD_ARTICLE("/WEB-INF/jsp/add_article.jsp");
+    USER_LIST("/WEB-INF/jsp/user_list.jsp"),
+    PRODUCT_LIST("/WEB-INF/jsp/product_list.jsp"),
+    ADD_ARTICLE("/WEB-INF/jsp/add_article.jsp"),
+    ADD_PRODUCT("/WEB-INF/jsp/add_product.jsp"),
+    ADD_SERVICE("/WEB-INF/jsp/add_service.jsp"),
+    ADD_SUPPlY("/WEB-INF/jsp/add_supply.jsp"),
+    SERVICE_LIST("/WEB-INF/jsp/service_list.jsp");
 
-    private String path;
+    private final String path;
 
-    private Page(String path) {
+    Page(String path) {
         this.path=path;
     }
 

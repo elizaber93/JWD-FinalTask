@@ -24,7 +24,7 @@
   <fmt:message bundle="${loc}" key="local.sign_in" var="sign_in"/>
   <fmt:message bundle="${loc}" key="local.register" var="registration"/>
   <fmt:message bundle="${loc}" key="local.nav.home" var = "home"/>
-<fmt:message bundle="${loc}" key="local.nav.produts" var = "products"/>
+<fmt:message bundle="${loc}" key="local.nav.products" var = "products"/>
 <fmt:message bundle="${loc}" key="local.nav.service" var = "services"/>
 <fmt:message bundle="${loc}" key="local.nav.article" var = "articles"/>
 <fmt:message bundle="${loc}" key="local.nav.contact" var = "contacts"/>
@@ -75,87 +75,81 @@
                     <div class="row">
                         <div class="col-md-2 col-lg-2 col-sm-3 col-xs-3">
                             <div class="logo">
-                                <a href="index.html">
+                                <a href="Controller?command=goto&page=index">
                                     <img src="images/logo/logo.png" alt="logo">
                                 </a>
                             </div>
                         </div>
                         <!-- Start MAinmenu Ares -->
-                        <div class="col-md-8 col-lg-8 col-sm-6 col-xs-6">
-                            <nav class="mainmenu__nav hidden-xs hidden-sm">
+                        <div>
+                            <nav>
                                 <ul class="main__menu">
                                     <li class="drop"><a href="Controller?command=goto&page=index">${home}</a>
-                                       
-                                    </li>
+									</li>
                                     <li class="drop"><a href="portfolio-gutter-box-3.html">${products}</a>
                                     </li>
                                     <li class="drop"><a href="blog.html">${services}</a>
                                     </li>
                                     <li class="drop"><a href="#">${articles}</a>
-                                        
                                     </li>
-                                    <li><a class="drop" href="Controller?command=goto&page=contacts">${contacts}</a></li>
-									
+                                    <li><a class="drop" href="Controller?command=goto&page=contacts">${contacts}</a>
+									</li>
+														
 									<c:set var = "role" scope = "request" value="${sessionScope.role}"/>
 									<c:if test="${role eq 'ADMIN'}">
 										<li class="drop"><a href="#">Administration</a>
                                     
+											<ul class="dropdown">
+												<li><a href="Controller?command=goto&page=add_supplier">Add Supplier</a></li>
+												<li><a href="Controller?command=supply_addition">Add Supply</a></li>
+												<li><a href="Controller?command=see_suppliers">See Suppliers</a></li>
+												<li><a href="Controller?command=goto&page=add_article">Add Article</a></li>		
+												<li><a href="Controller?command=see_users">See Users</a></li>
+												<li><a href="Controller?command=product_addition">Add Product</a></li>
+												<li><a href="Controller?command=see_products">See Products</a></li>
+												<li><a href="Controller?command=service_addition">Add Service</a></li>
+												<li><a href="Controller?command=see_services">See Services</a></li>
+												
+											</ul>
+										</li>
+									</c:if>
+								
+									<li class="drop"><a class="ti-shopping-cart"></a></li>
+
+									<li class="drop"><a class="ti-search"></a></li>
+								                             
+									<li class="drop"><a href="Controller?command=goto&page=login_register"><span class="ti-user"></span></a>
+									<c:set var = "auth" scope = "request" value="${sessionScope.auth}"/>
+									<c:if test="${auth == true}">
 									<ul class="dropdown">
-                                            <li><a href="Controller?command=goto&page=add_supplier">Add Supplier</a></li>
-                                            <li><a href="portfolio-gutter-full-wide-4.html">Add Supply</a></li>
-											<li><a href="Controller?command=see_suppliers">See Suppliers</a></li>
-											<li><a href="Controller?command=goto&page=add_article">Add Article</a></li>
-											
-                                    </ul>
-									</li>
+                                        <li><a href="Controller?command=goto_edit_profile">Edit profile</a></li>
+                                        <li><a href="Controller?command=logout">Log out</a></li>
+								    </ul>
 									</c:if>
 									
 									
 									
-                                </ul>
+									
+                                
                             </nav>
 							
-							
-							
-		  
-
-							
-							
-                                                     
-                        </div>
-						<div>
-						<ul class="main__menu">
-							<a class = "drop" href="Controller?command=changeloc&language=en&url=${requestScope.fullURL}">${en_button}</a>
-						/	
-							<a  class = "drop" href="Controller?command=changeloc&language=ru&url=${requestScope.fullURL}">${ru_button}</a>
 						
-						</ul>
 						</div>
+						<ul>
+							<li>
+									<a class = "drop" href="Controller?command=changeloc&language=en&url=${requestScope.fullURL}">${en_button}</a>
+									/
+									<a  class = "drop" href="Controller?command=changeloc&language=ru&url=${requestScope.fullURL}">${ru_button}</a>
+									</li>
+							</ul>
                         <!-- End MAinmenu Ares -->
-                        <div class="col-md-2 col-sm-4 col-xs-3">  
-                            <ul class="main__menu">
-                                <li class="drop"><span class="ti-search">
-								<ul class="dropdown">
-								<li></li>
-                                            </ul></span></li>
-                                <li class="drop"><a href="Controller?command=goto&page=login_register"><span class="ti-user"></span></a>
-								<c:set var = "auth" scope = "request" value="${sessionScope.auth}"/>
-									<c:if test="${auth == true}">
-									<ul class="dropdown">
-                                            <li><a href="Controller?command=goto_edit_profile">Edit profile</a></li>
-                                            <li><a href="Controller?command=logout">Log out</a></li>
-								     </ul>
-								</c:if>
-								</li>
-                                <li class="drop"><span class="ti-shopping-cart"></span></li>
-                                </ul>
-                        </div>
                     </div>
                  
                 </div>
             </div>
             <!-- End Mainmenu Area -->
         </header>
+		
 	
         <!-- End Header Style -->
 		</body>
